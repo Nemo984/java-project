@@ -33,7 +33,7 @@ public class Mainpage extends AppCompatActivity {
                             selectedFragment = new Home();
                             break;
                         case R.id.nav_map:
-                            selectedFragment = new map();
+                            selectedFragment = new MapsFragment();
                             break;
                         case R.id.nav_info:
                             selectedFragment = new info();
