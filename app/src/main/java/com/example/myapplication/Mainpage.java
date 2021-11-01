@@ -17,6 +17,8 @@ public class Mainpage extends AppCompatActivity {
         setContentView(R.layout.activity_mainpage);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navi);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new Home()).commit();
         bottomNav.setOnNavigationItemSelectedListener(navListener);
     }
 
