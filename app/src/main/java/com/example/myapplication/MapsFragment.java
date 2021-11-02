@@ -23,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -130,7 +131,7 @@ public class MapsFragment extends Fragment {
                                  .append("\nNew deaths: ").append(new_death)
                                  .append("\nTotal cases: ").append(total_case)
                                  .append("\nTotal deaths: ").append(total_death);
-                        googleMap.addMarker(new MarkerOptions()
+                        googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                                 .position(provincePos)
                                 .title(province)
                                 .snippet(new String(covidInfo)));
