@@ -4,11 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.myapplication.api.covid.CovidApi;
 import com.example.myapplication.api.JsonReader;
@@ -18,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
@@ -45,6 +52,34 @@ public class MapsFragment extends Fragment {
             LatLng sydney = new LatLng(-34, 151);
             LatLng bangkok = new LatLng(13.7563,100.5018);
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bangkok,7f));
+            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker arg0) {
+                    return null;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+                    Context mContext = getContext();
+                    LinearLayout info = new LinearLayout(mContext);
+                    info.setOrientation(LinearLayout.VERTICAL);
+
+                    TextView title = new TextView(mContext);
+                    title.setTextColor(Color.BLACK);
+                    title.setGravity(Gravity.CENTER);
+                    title.setTypeface(null, Typeface.BOLD);
+                    title.setText(marker.getTitle());
+
+                    TextView snippet = new TextView(mContext);
+                    snippet.setTextColor(Color.GRAY);
+                    snippet.setText(marker.getSnippet());
+
+                    info.addView(title);
+                    info.addView(snippet);
+
+                    return info;
+                }
+            });
             try {
                 mapDailyCases(googleMap);
             } catch (JSONException e) {
@@ -90,8 +125,15 @@ public class MapsFragment extends Fragment {
                         int total_death = Object.getInt("total_death");
                         String update_date = Object.getString("update_date");
                         System.out.println("new cases: " + new_case + " new deaths" + new_death);
-                        googleMap.addMarker(new MarkerOptions().position(provincePos).title(province));
-                        // do some stuff....
+                        StringBuilder covidInfo = new StringBuilder(100);
+                        covidInfo.append("New cases: ").append(new_case)
+                                 .append("\nNew deaths: ").append(new_death)
+                                 .append("\nTotal cases: ").append(total_case)
+                                 .append("\nTotal deaths: ").append(total_death);
+                        googleMap.addMarker(new MarkerOptions()
+                                .position(provincePos)
+                                .title(province)
+                                .snippet(new String(covidInfo)));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
