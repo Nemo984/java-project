@@ -125,13 +125,29 @@ public class MapsFragment extends Fragment {
                         int total_case = Object.getInt("total_case");
                         int total_death = Object.getInt("total_death");
                         String update_date = Object.getString("update_date");
-                        System.out.println("new cases: " + new_case + " new deaths" + new_death);
+
+
                         StringBuilder covidInfo = new StringBuilder(100);
                         covidInfo.append("New cases: ").append(new_case)
                                  .append("\nNew deaths: ").append(new_death)
                                  .append("\nTotal cases: ").append(total_case)
                                  .append("\nTotal deaths: ").append(total_death);
-                        googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+
+                        float markerHue;
+                        if (total_case > 100000) {
+                            markerHue = BitmapDescriptorFactory.HUE_RED;
+                        } else if (total_case > 50000) {
+                            markerHue = BitmapDescriptorFactory.HUE_ORANGE;
+                        } else if (total_case > 30000) {
+                            markerHue = BitmapDescriptorFactory.HUE_YELLOW;
+                        } else if (total_case > 10000){
+                            markerHue = BitmapDescriptorFactory.HUE_AZURE;
+                        } else if (total_case > 5000) {
+                            markerHue = BitmapDescriptorFactory.HUE_MAGENTA;
+                        } else {
+                            markerHue = BitmapDescriptorFactory.HUE_GREEN;
+                        }
+                        googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(markerHue))
                                 .position(provincePos)
                                 .title(province)
                                 .snippet(new String(covidInfo)));
