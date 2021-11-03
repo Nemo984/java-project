@@ -10,5 +10,15 @@
         android:textSize="30sp"
         android:layout_centerInParent="true"/>
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="300dp"
+        android:layout_marginBottom="0dp"
+        android:onClick="ShowPopup"
+        android:text="+ CREATE" />
+
 
 </RelativeLayout>
