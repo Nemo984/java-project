@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +38,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class MapsFragment extends Fragment {
+
+
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -90,6 +93,7 @@ public class MapsFragment extends Fragment {
             }
         }
     };
+
 
     public BitmapDescriptor getMarkerIcon(String color) {
         float[] hsv = new float[3];

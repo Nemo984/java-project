@@ -40,6 +40,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         myDialog = new Dialog(this);
+
     }
 
     private void showDate(){
