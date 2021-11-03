@@ -23,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -50,9 +51,8 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng sydney = new LatLng(-34, 151);
-            LatLng bangkok = new LatLng(13.7563,100.5018);
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bangkok,7f));
+            LatLng bangkok = new LatLng(13.7563, 100.5018);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(bangkok, 6f));
             googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
                 public View getInfoWindow(Marker arg0) {
@@ -91,10 +91,17 @@ public class MapsFragment extends Fragment {
         }
     };
 
+    public BitmapDescriptor getMarkerIcon(String color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(Color.parseColor(color), hsv);
+        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    }
+
     private void mapDailyCases(GoogleMap googleMap) throws JSONException, IOException {
 
-        new AsyncTask<String, Integer, Void>(){
+        new AsyncTask<String, Integer, Void>() {
             JSONArray json;
+
             @Override
             protected Void doInBackground(String... params) {
                 try {
@@ -109,8 +116,8 @@ public class MapsFragment extends Fragment {
 
             @Override
             protected void onPostExecute(Void result) {
-                HashMap<String,Double[]> provinceLocationMap = ProvinceLocationHashMap.getMap();
-                for(int n = 0; n < json.length(); n++) {
+                HashMap<String, Double[]> provinceLocationMap = ProvinceLocationHashMap.getMap();
+                for (int n = 0; n < json.length(); n++) {
                     try {
                         JSONObject Object = json.getJSONObject(n);
                         String province = Object.getString("province");
@@ -129,25 +136,26 @@ public class MapsFragment extends Fragment {
 
                         StringBuilder covidInfo = new StringBuilder(100);
                         covidInfo.append("New cases: ").append(new_case)
-                                 .append("\nNew deaths: ").append(new_death)
-                                 .append("\nTotal cases: ").append(total_case)
-                                 .append("\nTotal deaths: ").append(total_death);
+                                .append("\nNew deaths: ").append(new_death)
+                                .append("\nTotal cases: ").append(total_case)
+                                .append("\nTotal deaths: ").append(total_death);
 
-                        float markerHue;
+
+                        BitmapDescriptor markerHue;
                         if (total_case > 100000) {
-                            markerHue = BitmapDescriptorFactory.HUE_RED;
+                            markerHue = getMarkerIcon("#b20000");
                         } else if (total_case > 50000) {
-                            markerHue = BitmapDescriptorFactory.HUE_ORANGE;
+                            markerHue = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
                         } else if (total_case > 30000) {
-                            markerHue = BitmapDescriptorFactory.HUE_YELLOW;
-                        } else if (total_case > 10000){
-                            markerHue = BitmapDescriptorFactory.HUE_AZURE;
+                            markerHue = getMarkerIcon("#FF5733");
+                        } else if (total_case > 10000) {
+                            markerHue = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
                         } else if (total_case > 5000) {
-                            markerHue = BitmapDescriptorFactory.HUE_MAGENTA;
+                            markerHue = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
                         } else {
-                            markerHue = BitmapDescriptorFactory.HUE_GREEN;
+                            markerHue = getMarkerIcon("#ff2299");
                         }
-                        googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(markerHue))
+                        googleMap.addMarker(new MarkerOptions().icon(markerHue)
                                 .position(provincePos)
                                 .title(province)
                                 .snippet(new String(covidInfo)));
@@ -165,7 +173,7 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_map, container,false);
+        return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
     @Override
