@@ -41,8 +41,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class MapsFragment extends Fragment {
 
@@ -92,10 +94,8 @@ public class MapsFragment extends Fragment {
                 }
             });
             try {
-                mapDailyCases(googleMap);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+                mapProvinces(googleMap);
+            } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
 
@@ -128,7 +128,9 @@ public class MapsFragment extends Fragment {
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
-    private void mapDailyCases(GoogleMap googleMap) throws JSONException, IOException {
+    List<Marker> provincesMarkers = new ArrayList<>();
+
+    private void mapProvinces(GoogleMap googleMap) throws JSONException, IOException {
 
         new AsyncTask<String, Integer, Void>() {
             JSONArray json;
@@ -186,10 +188,13 @@ public class MapsFragment extends Fragment {
                         } else {
                             markerHue = getMarkerIcon("#ff2299");
                         }
-                        googleMap.addMarker(new MarkerOptions().icon(markerHue)
+
+                        provincesMarkers.add(
+                                googleMap.addMarker(new MarkerOptions().icon(markerHue)
                                 .position(provincePos)
                                 .title(province)
-                                .snippet(new String(covidInfo)));
+                                .snippet(new String(covidInfo)))
+                        );
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -197,6 +202,12 @@ public class MapsFragment extends Fragment {
             }
         }.execute();
 
+    }
+
+    public void showProvincesMarker(boolean bool) {
+        for (Marker province : provincesMarkers) {
+            province.setVisible(bool);
+        }
     }
 
     @Nullable
