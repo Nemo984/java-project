@@ -14,8 +14,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.api.covid.CovidApi;
 import com.example.myapplication.api.JsonReader;
@@ -118,6 +122,22 @@ public class MapsFragment extends Fragment {
                 }
             });
 
+            //On item selected listener for spinner
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                    String choice = adapterView.getItemAtPosition(position).toString();
+                    Toast.makeText(getActivity(),choice,Toast.LENGTH_LONG);
+                    if (choice.equals("Timelines")) {
+                        showProvincesMarker(false);
+                    } else {
+                        showProvincesMarker(true);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapter) {}
+            });
         }
     };
 
@@ -210,6 +230,8 @@ public class MapsFragment extends Fragment {
         }
     }
 
+    private Spinner spinner;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -245,8 +267,11 @@ public class MapsFragment extends Fragment {
 
         autocompleteFragment.setCountry("TH");
 
-
-
+        //spinner - drop down menu
+        spinner = (Spinner) getActivity().findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),R.array.map_types,R.layout.support_simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
 
     }
