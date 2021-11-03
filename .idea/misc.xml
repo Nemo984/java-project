@@ -9,6 +9,7 @@
         <entry key="..\:/Projects/Java/MyApplication/app/src/main/res/layout/fragment_maps.xml" value="0.1" />
         <entry key="..\:/Projects/Java/MyApplication/app/src/main/res/layout/fragment_search.xml" value="0.1265625" />
         <entry key="..\:/Projects/Java/java-project/app/src/main/res/layout/fragment_map.xml" value="0.264" />
+        <entry key="..\:/Projects/Java/java-project/app/src/main/res/layout/pop_menu.xml" value="0.13020833333333334" />
         <entry key="..\:/real/MyApplication/app/src/main/res/layout/activity_main.xml" value="0.17481884057971014" />
         <entry key="..\:/real/MyApplication/app/src/main/res/layout/activity_mainpage.xml" value="0.264" />
         <entry key="..\:/real/MyApplication/app/src/main/res/layout/fragment_home.xml" value="0.13020833333333334" />
@@ -16,13 +17,6 @@
         <entry key="..\:/real/MyApplication/app/src/main/res/layout/fragment_map.xml" value="0.1598731884057971" />
         <entry key="..\:/real/MyApplication/app/src/main/res/layout/fragment_search.xml" value="0.1598731884057971" />
         <entry key="..\:/real/MyApplication/app/src/main/res/menu/bottom_navigation.xml" value="0.25052083333333336" />
-        <entry key="..\:/real/java-project/app/src/main/res/layout/activity_main.xml" value="0.3532608695652174" />
-        <entry key="..\:/real/java-project/app/src/main/res/layout/activity_mainpage.xml" value="0.3532608695652174" />
-        <entry key="..\:/real/java-project/app/src/main/res/layout/fragment_home.xml" value="0.3532608695652174" />
-        <entry key="..\:/real/java-project/app/src/main/res/layout/fragment_info.xml" value="0.3532608695652174" />
-        <entry key="..\:/real/java-project/app/src/main/res/layout/fragment_map.xml" value="0.3532608695652174" />
-        <entry key="..\:/real/java-project/app/src/main/res/layout/fragment_search.xml" value="0.3532608695652174" />
-        <entry key="..\:/real/java-project/app/src/main/res/layout/pop_menu.xml" value="0.3532608695652174" />
       </map>
     </option>
   </component>

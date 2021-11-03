@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.example.myapplication.api.covid.CovidApi;
 import com.example.myapplication.api.JsonReader;
 import com.example.myapplication.api.covid.ProvinceLocationHashMap;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -28,18 +30,23 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class MapsFragment extends Fragment {
 
-
+    AutocompleteSupportFragment autocompleteFragment;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -91,6 +98,26 @@ public class MapsFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            // Set up a PlaceSelectionListener to handle the response -- see this real!!!.
+            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                private static final String TAG = "auto-complete fragment";
+
+                @Override
+                public void onPlaceSelected(@NonNull Place place) {
+                    // TODO: Get info about the selected place.
+                    Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getLatLng()); // Real !!! <- get LatLng
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 10f));
+                }
+
+
+                @Override
+                public void onError(@NonNull Status status) {
+                    // TODO: Handle the error.
+                    Log.i(TAG, "An error occurred: " + status);
+                }
+            });
+
         }
     };
 
@@ -177,6 +204,7 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
@@ -188,5 +216,27 @@ public class MapsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+
+        // Initialize the AutocompleteSupportFragment.
+        Places.initialize(getActivity().getApplicationContext(),"AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY");
+
+        autocompleteFragment = (AutocompleteSupportFragment)
+                getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        // Specify the types of place data to return. --> see this real!! -> return Lat_lng
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG));
+
+        //set location bounds -> Thailand
+        autocompleteFragment.setLocationBias(RectangularBounds.newInstance(
+                new LatLng(15,101),
+                new LatLng(15,101)
+        ));
+
+        autocompleteFragment.setCountry("TH");
+
+
+
+
+
     }
 }
