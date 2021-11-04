@@ -286,7 +286,10 @@ public class MapsFragment extends Fragment {
             if (prevMarker != null && prevCircle == null) {
                 CircleOptions circleOptions = new CircleOptions()
                         .center(new LatLng(prevMarker.getPosition().latitude, prevMarker.getPosition().longitude))
-                        .radius(1000 * value); // In meters
+                        .radius(1000 * value) // In meters
+                        .fillColor(0x33FF0000)
+                        .strokeColor(Color.RED)
+                        .strokeWidth(0);
 
                 prevCircle = googleMap.addCircle(circleOptions);
             } else if (prevMarker != null && prevCircle != null) {
