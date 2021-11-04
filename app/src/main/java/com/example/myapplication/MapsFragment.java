@@ -16,10 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.myapplication.api.covid.CovidApi;
 import com.example.myapplication.api.JsonReader;
@@ -31,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -40,6 +41,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.slider.Slider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +56,9 @@ import java.util.List;
 public class MapsFragment extends Fragment {
 
     AutocompleteSupportFragment autocompleteFragment;
+    FrameLayout sliderLayout;
+    Slider radiusSlider;
+
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -107,6 +112,8 @@ public class MapsFragment extends Fragment {
                     return info;
                 }
             });
+
+            //Map each province
             try {
                 mapProvinces(googleMap);
             } catch (JSONException | IOException e) {
@@ -135,16 +142,23 @@ public class MapsFragment extends Fragment {
                 }
             });
 
+            //TODO: put timelines / cases into their own setup func.
             //On item selected listener for spinner
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                     String choice = adapterView.getItemAtPosition(position).toString();
-                    Toast.makeText(getActivity(),choice,Toast.LENGTH_LONG);
                     if (choice.equals("Timelines")) {
                         showProvincesMarker(false);
+                        sliderLayout.setVisibility(View.VISIBLE);
+                        mapTimelines(googleMap);
                     } else {
                         showProvincesMarker(true);
+                        sliderLayout.setVisibility(View.GONE);
+                        if (prevMarker != null) {
+                            prevMarker.remove();
+                        }
+                        googleMap.setOnMapClickListener(null);
                     }
                 }
 
@@ -162,6 +176,7 @@ public class MapsFragment extends Fragment {
     }
 
     List<Marker> provincesMarkers = new ArrayList<>();
+
 
     private void mapProvinces(GoogleMap googleMap) throws JSONException, IOException {
 
@@ -234,8 +249,36 @@ public class MapsFragment extends Fragment {
                 }
             }
         }.execute();
-
     }
+
+    Marker prevMarker;
+    public void mapTimelines(GoogleMap googleMap) {
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+                if (prevMarker != null) {
+                    prevMarker.remove();
+                }
+                prevMarker = googleMap.addMarker(new MarkerOptions().position(point));
+            }
+        });
+
+        radiusSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+
+            }
+        });
+    }
+
+
 
     public void showProvincesMarker(boolean bool) {
         for (Marker province : provincesMarkers) {
@@ -286,6 +329,11 @@ public class MapsFragment extends Fragment {
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+        //get slider layout
+        sliderLayout = (FrameLayout) getActivity().findViewById(R.id.sliderLayout);
+        sliderLayout.setVisibility(View.GONE);
 
+        //get radius slider
+        radiusSlider = getActivity().findViewById(R.id.radiusSlider);
     }
 }
