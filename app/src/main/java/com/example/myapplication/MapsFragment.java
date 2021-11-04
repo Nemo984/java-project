@@ -31,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -77,12 +78,12 @@ public class MapsFragment extends Fragment {
 //            LatLng bangkok = new LatLng(13.7563, 100.5018);
 //            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(bangkok, 6f));
             LatLngBounds thailandBounds = new LatLngBounds(
-                    new LatLng(5.6130380,97.3433960),
-                    new LatLng(20.4651430,105.6368120)
+                    new LatLng(5.6130380, 97.3433960),
+                    new LatLng(20.4651430, 105.6368120)
             );
-            googleMap.setPadding(0,150,0,0);
+            googleMap.setPadding(0, 150, 0, 0);
             googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(thailandBounds, 0));
-            googleMap.setPadding(0,0,0,0);
+            googleMap.setPadding(0, 0, 0, 0);
 
             googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
@@ -114,11 +115,11 @@ public class MapsFragment extends Fragment {
             });
 
             //Map each province
-            try {
-                mapProvinces(googleMap);
-            } catch (JSONException | IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                mapProvinces(googleMap);
+//            } catch (JSONException | IOException e) {
+//                e.printStackTrace();
+//            }
 
             // Set up a PlaceSelectionListener to handle the response -- see this real!!!.
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -157,13 +158,22 @@ public class MapsFragment extends Fragment {
                         sliderLayout.setVisibility(View.GONE);
                         if (prevMarker != null) {
                             prevMarker.remove();
+                            prevMarker = null;
                         }
+                        radiusSlider.setValue(0);
+                        if (prevCircle != null) {
+                            prevCircle.remove();
+                            prevCircle = null;
+                        }
+
                         googleMap.setOnMapClickListener(null);
+                        radiusSlider.addOnChangeListener(null);
                     }
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> adapter) {}
+                public void onNothingSelected(AdapterView<?> adapter) {
+                }
             });
         }
     };
@@ -239,9 +249,9 @@ public class MapsFragment extends Fragment {
 
                         provincesMarkers.add(
                                 googleMap.addMarker(new MarkerOptions().icon(markerHue)
-                                .position(provincePos)
-                                .title(province)
-                                .snippet(new String(covidInfo)))
+                                        .position(provincePos)
+                                        .title(province)
+                                        .snippet(new String(covidInfo)))
                         );
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -252,6 +262,8 @@ public class MapsFragment extends Fragment {
     }
 
     Marker prevMarker;
+    Circle prevCircle;
+
     public void mapTimelines(GoogleMap googleMap) {
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -260,24 +272,29 @@ public class MapsFragment extends Fragment {
                 if (prevMarker != null) {
                     prevMarker.remove();
                 }
+                radiusSlider.setValue(0);
+                if (prevCircle != null) {
+                    prevCircle.remove();
+                    prevCircle = null;
+                }
                 prevMarker = googleMap.addMarker(new MarkerOptions().position(point));
             }
         });
 
-        radiusSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+        // TODO: put this in a func. call together with timelines setup
+        radiusSlider.addOnChangeListener((slider, value, fromUser) -> {
+            if (prevMarker != null && prevCircle == null) {
+                CircleOptions circleOptions = new CircleOptions()
+                        .center(new LatLng(prevMarker.getPosition().latitude, prevMarker.getPosition().longitude))
+                        .radius(1000 * value); // In meters
 
-            @Override
-            public void onStartTrackingTouch(@NonNull Slider slider) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(@NonNull Slider slider) {
-
+                prevCircle = googleMap.addCircle(circleOptions);
+            } else if (prevMarker != null && prevCircle != null) {
+                prevCircle.setRadius(1000 * value);
             }
         });
-    }
 
+    }
 
 
     public void showProvincesMarker(boolean bool) {
@@ -307,25 +324,25 @@ public class MapsFragment extends Fragment {
         }
 
         // Initialize the AutocompleteSupportFragment.
-        Places.initialize(getActivity().getApplicationContext(),"AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY");
+        Places.initialize(getActivity().getApplicationContext(), "AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY");
 
         autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
         // Specify the types of place data to return. -->
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG, Place.Field.VIEWPORT));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.VIEWPORT));
 
         //set location bounds -> Thailand
         autocompleteFragment.setLocationBias(RectangularBounds.newInstance(
-                new LatLng(15,101),
-                new LatLng(15,101)
+                new LatLng(15, 101),
+                new LatLng(15, 101)
         ));
 
         autocompleteFragment.setCountry("TH");
 
         //spinner - drop down menu
         spinner = (Spinner) getActivity().findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),R.array.map_types,R.layout.support_simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.map_types, R.layout.support_simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
