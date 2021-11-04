@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -59,7 +60,7 @@ public class MapsFragment extends Fragment {
     AutocompleteSupportFragment autocompleteFragment;
     FrameLayout sliderLayout;
     Slider radiusSlider;
-
+    Button searchButton;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -115,11 +116,11 @@ public class MapsFragment extends Fragment {
             });
 
             //Map each province
-//            try {
-//                mapProvinces(googleMap);
-//            } catch (JSONException | IOException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                mapProvinces(googleMap);
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
 
             // Set up a PlaceSelectionListener to handle the response -- see this real!!!.
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -153,6 +154,7 @@ public class MapsFragment extends Fragment {
                         showProvincesMarker(false);
                         sliderLayout.setVisibility(View.VISIBLE);
                         mapTimelines(googleMap);
+                        searchButton.setVisibility(View.VISIBLE);
                     } else {
                         showProvincesMarker(true);
                         sliderLayout.setVisibility(View.GONE);
@@ -165,7 +167,7 @@ public class MapsFragment extends Fragment {
                             prevCircle.remove();
                             prevCircle = null;
                         }
-
+                        searchButton.setVisibility(View.GONE);
                         googleMap.setOnMapClickListener(null);
                         radiusSlider.addOnChangeListener(null);
                     }
@@ -355,5 +357,15 @@ public class MapsFragment extends Fragment {
 
         //get radius slider
         radiusSlider = getActivity().findViewById(R.id.radiusSlider);
+
+        searchButton = getActivity().findViewById(R.id.searchButton);
+        searchButton.setVisibility(View.GONE);
+//        searchButton.setOnClickListener(new View.OnClickListener() {
+//            // verify + api call
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
     }
 }
