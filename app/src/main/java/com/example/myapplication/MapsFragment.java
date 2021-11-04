@@ -32,6 +32,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
@@ -67,8 +68,17 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng bangkok = new LatLng(13.7563, 100.5018);
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(bangkok, 6f));
+            //default location
+//            LatLng bangkok = new LatLng(13.7563, 100.5018);
+//            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(bangkok, 6f));
+            LatLngBounds thailandBounds = new LatLngBounds(
+                    new LatLng(5.6130380,97.3433960),
+                    new LatLng(20.4651430,105.6368120)
+            );
+            googleMap.setPadding(0,150,0,0);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(thailandBounds, 0));
+            googleMap.setPadding(0,0,0,0);
+
             googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
                 public View getInfoWindow(Marker arg0) {
@@ -110,8 +120,11 @@ public class MapsFragment extends Fragment {
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
                     // TODO: Get info about the selected place.
-                    Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getLatLng()); // Real !!! <- get LatLng
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 10f));
+                    LatLng latLng = place.getLatLng();
+                    double lat = latLng.latitude;
+                    double lon = latLng.longitude;
+                    Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getLatLng());
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(place.getViewport(), 0));
                 }
 
 
@@ -256,8 +269,8 @@ public class MapsFragment extends Fragment {
         autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
-        // Specify the types of place data to return. --> see this real!! -> return Lat_lng
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG));
+        // Specify the types of place data to return. -->
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG, Place.Field.VIEWPORT));
 
         //set location bounds -> Thailand
         autocompleteFragment.setLocationBias(RectangularBounds.newInstance(
