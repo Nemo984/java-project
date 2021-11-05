@@ -22,6 +22,12 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.myapplication.api.covid.CovidApi;
 import com.example.myapplication.api.JsonReader;
 import com.example.myapplication.api.covid.ProvinceLocationHashMap;
@@ -62,6 +68,8 @@ public class MapsFragment extends Fragment {
     Slider radiusSlider;
     Button searchButton;
     View resetCameraBtn;
+
+    public final String BACKEND_URL = "https://544c-125-25-13-221.ngrok.io";
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -158,7 +166,7 @@ public class MapsFragment extends Fragment {
                 public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                     String choice = adapterView.getItemAtPosition(position).toString();
                     if (choice.equals("Timelines")) {
-                        showProvincesMarker(false);
+                        showMarkers(provincesMarkers, false);
                         sliderLayout.setVisibility(View.VISIBLE);
                         mapTimelines(googleMap);
                         searchButton.setVisibility(View.VISIBLE);
@@ -190,7 +198,7 @@ public class MapsFragment extends Fragment {
                         });
 
                     } else {
-                        showProvincesMarker(true);
+                        showMarkers(provincesMarkers, true);
                         if (prevMarker != null) {
                             prevMarker.remove();
                         }
@@ -207,6 +215,52 @@ public class MapsFragment extends Fragment {
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapter) {
+                }
+            });
+
+            //search button
+            searchButton.setOnClickListener(new View.OnClickListener() {
+                // verify + api call
+                @Override
+                public void onClick(View view) {
+                    if (prevMarker != null && prevCircle != null && prevCircle.getRadius() > 0) {
+                        double latitude = prevMarker.getPosition().latitude;
+                        double longitude = prevMarker.getPosition().longitude;
+                        double radius = prevCircle.getRadius() / 1000;
+                        StringBuilder endpoint = new StringBuilder(BACKEND_URL).append("/api/timelines/?lat=").append(latitude)
+                                .append("&lon=").append(longitude)
+                                .append("&radius=").append(radius);
+                        String URL = new String(endpoint);
+                        Log.i("search", new String(endpoint));
+
+                        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+                                for (int n = 0; n < response.length(); n++) {
+                                    try {
+                                        JSONObject Object = response.getJSONObject(n);
+                                        double latitude = Object.getDouble("latitude");
+                                        double longitude = Object.getDouble("longitude");
+                                        LatLng latLng = new LatLng(latitude, longitude);
+                                        BitmapDescriptor markerHue = getMarkerIcon("#b20000");
+                                        timelinesMarkers.add(
+                                                googleMap.addMarker(new MarkerOptions().icon(markerHue)
+                                                        .position(latLng)
+                                                ));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("Timelines",error.toString());
+                            }
+                        });
+                        Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
+
+                    }
                 }
             });
         }
@@ -229,7 +283,7 @@ public class MapsFragment extends Fragment {
     }
 
     List<Marker> provincesMarkers = new ArrayList<>();
-
+    List<Marker> timelinesMarkers = new ArrayList<>();
 
     private void mapProvinces(GoogleMap googleMap) throws JSONException, IOException {
 
@@ -325,12 +379,11 @@ public class MapsFragment extends Fragment {
         });
 
 
-
     }
 
 
-    public void showProvincesMarker(boolean bool) {
-        for (Marker province : provincesMarkers) {
+    public void showMarkers(List<Marker> markers, boolean bool) {
+        for (Marker province : markers) {
             province.setVisible(bool);
         }
     }
@@ -345,6 +398,8 @@ public class MapsFragment extends Fragment {
 
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -389,15 +444,8 @@ public class MapsFragment extends Fragment {
         resetCameraBtn = getActivity().findViewById(R.id.resetCameraBtn);
 
         searchButton = getActivity().findViewById(R.id.searchButton);
-        searchButton.setVisibility(View.GONE);
 
-//        searchButton.setOnClickListener(new View.OnClickListener() {
-//            // verify + api call
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
+        searchButton.setVisibility(View.INVISIBLE);
 
 
     }
