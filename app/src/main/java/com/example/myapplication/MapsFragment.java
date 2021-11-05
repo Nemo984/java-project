@@ -155,21 +155,38 @@ public class MapsFragment extends Fragment {
                         sliderLayout.setVisibility(View.VISIBLE);
                         mapTimelines(googleMap);
                         searchButton.setVisibility(View.VISIBLE);
+                        // TODO: put this in a func. call together with timelines setup
+                        radiusSlider.addOnChangeListener(new Slider.OnChangeListener() {
+                            @Override
+                            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                                if (prevMarker != null && prevCircle == null) {
+                                    CircleOptions circleOptions = new CircleOptions()
+                                            .center(new LatLng(prevMarker.getPosition().latitude, prevMarker.getPosition().longitude))
+                                            .radius(1000 * value) // In meters
+                                            .fillColor(0x33FF0000)
+                                            .strokeColor(Color.RED)
+                                            .strokeWidth(0);
+
+                                    prevCircle = googleMap.addCircle(circleOptions);
+                                } else if (prevMarker != null && prevCircle != null) {
+                                    prevCircle.setRadius(1000 * value);
+                                }
+                            }
+                        });
+
                     } else {
                         showProvincesMarker(true);
-                        sliderLayout.setVisibility(View.GONE);
                         if (prevMarker != null) {
                             prevMarker.remove();
-                            prevMarker = null;
                         }
                         radiusSlider.setValue(0);
                         if (prevCircle != null) {
                             prevCircle.remove();
-                            prevCircle = null;
                         }
-                        searchButton.setVisibility(View.GONE);
                         googleMap.setOnMapClickListener(null);
-                        radiusSlider.addOnChangeListener(null);
+                        searchButton.setVisibility(View.GONE);
+                        sliderLayout.setVisibility(View.INVISIBLE);
+
                     }
                 }
 
@@ -283,21 +300,7 @@ public class MapsFragment extends Fragment {
             }
         });
 
-        // TODO: put this in a func. call together with timelines setup
-        radiusSlider.addOnChangeListener((slider, value, fromUser) -> {
-            if (prevMarker != null && prevCircle == null) {
-                CircleOptions circleOptions = new CircleOptions()
-                        .center(new LatLng(prevMarker.getPosition().latitude, prevMarker.getPosition().longitude))
-                        .radius(1000 * value) // In meters
-                        .fillColor(0x33FF0000)
-                        .strokeColor(Color.RED)
-                        .strokeWidth(0);
 
-                prevCircle = googleMap.addCircle(circleOptions);
-            } else if (prevMarker != null && prevCircle != null) {
-                prevCircle.setRadius(1000 * value);
-            }
-        });
 
     }
 
@@ -360,6 +363,7 @@ public class MapsFragment extends Fragment {
 
         searchButton = getActivity().findViewById(R.id.searchButton);
         searchButton.setVisibility(View.GONE);
+
 //        searchButton.setOnClickListener(new View.OnClickListener() {
 //            // verify + api call
 //            @Override
