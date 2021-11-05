@@ -70,6 +70,7 @@ public class MapsFragment extends Fragment {
     View resetCameraBtn;
 
     public final String BACKEND_URL = "https://544c-125-25-13-221.ngrok.io";
+    final int DEFAULT_UNIT = 1;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -180,7 +181,7 @@ public class MapsFragment extends Fragment {
                                 if (prevMarker != null && prevCircle == null) {
                                     CircleOptions circleOptions = new CircleOptions()
                                             .center(new LatLng(prevMarker.getPosition().latitude, prevMarker.getPosition().longitude))
-                                            .radius(1000 * value) // In meters
+                                            .radius(DEFAULT_UNIT * value) // In meters
                                             .fillColor(0x33FF0000)
                                             .strokeColor(Color.RED)
                                             .strokeWidth(0);
@@ -190,7 +191,7 @@ public class MapsFragment extends Fragment {
                                             circleOptions.getCenter(), getZoomLevel(prevCircle)));
 
                                 } else if (prevMarker != null && prevCircle != null) {
-                                    prevCircle.setRadius(1000 * value);
+                                    prevCircle.setRadius(DEFAULT_UNIT * value);
                                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                             prevCircle.getCenter(), getZoomLevel(prevCircle)));
                                 }
@@ -199,6 +200,7 @@ public class MapsFragment extends Fragment {
 
                     } else {
                         showMarkers(provincesMarkers, true);
+                        timelinesMarkers.clear();
                         if (prevMarker != null) {
                             prevMarker.remove();
                         }
@@ -226,7 +228,7 @@ public class MapsFragment extends Fragment {
                     if (prevMarker != null && prevCircle != null && prevCircle.getRadius() > 0) {
                         double latitude = prevMarker.getPosition().latitude;
                         double longitude = prevMarker.getPosition().longitude;
-                        double radius = prevCircle.getRadius() / 1000;
+                        double radius = prevCircle.getRadius() / DEFAULT_UNIT;
                         StringBuilder endpoint = new StringBuilder(BACKEND_URL).append("/api/timelines/?lat=").append(latitude)
                                 .append("&lon=").append(longitude)
                                 .append("&radius=").append(radius);
@@ -383,8 +385,8 @@ public class MapsFragment extends Fragment {
 
 
     public void showMarkers(List<Marker> markers, boolean bool) {
-        for (Marker province : markers) {
-            province.setVisible(bool);
+        for (Marker marker : markers) {
+            marker.setVisible(bool);
         }
     }
 
