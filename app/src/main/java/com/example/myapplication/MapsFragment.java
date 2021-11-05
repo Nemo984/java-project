@@ -159,6 +159,9 @@ public class MapsFragment extends Fragment {
                         radiusSlider.addOnChangeListener(new Slider.OnChangeListener() {
                             @Override
                             public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                                if (value <= 0) {
+                                    return;
+                                }
                                 if (prevMarker != null && prevCircle == null) {
                                     CircleOptions circleOptions = new CircleOptions()
                                             .center(new LatLng(prevMarker.getPosition().latitude, prevMarker.getPosition().longitude))
@@ -168,8 +171,13 @@ public class MapsFragment extends Fragment {
                                             .strokeWidth(0);
 
                                     prevCircle = googleMap.addCircle(circleOptions);
+                                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                            circleOptions.getCenter(), getZoomLevel(prevCircle)));
+
                                 } else if (prevMarker != null && prevCircle != null) {
                                     prevCircle.setRadius(1000 * value);
+                                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                            prevCircle.getCenter(), getZoomLevel(prevCircle)));
                                 }
                             }
                         });
@@ -197,6 +205,15 @@ public class MapsFragment extends Fragment {
         }
     };
 
+    public int getZoomLevel(Circle circle) {
+        int zoomLevel = 11;
+        if (circle != null) {
+            double radius = circle.getRadius() + circle.getRadius() / 2;
+            double scale = radius / 500;
+            zoomLevel = (int) (16 - Math.log(scale) / Math.log(2));
+        }
+        return zoomLevel;
+    }
 
     public BitmapDescriptor getMarkerIcon(String color) {
         float[] hsv = new float[3];
