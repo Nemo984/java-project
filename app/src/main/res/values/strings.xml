@@ -1,10 +1,22 @@
 <resources>
     <string name="app_name">Simple Covid</string>
     <string name="google_maps_key">AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY</string>
+
     <string-array name="map_types">
         <item>Cases</item>
         <item>Timelines</item>
     </string-array>
+    <string-array name="date_types">
+        <item>Today</item>
+        <item>Last 7 days</item>
+        <item>Last 30 days</item>
+        <item>All time</item>
+    </string-array>
+    <string-array name="unit_types">
+        <item>Meter</item>
+        <item>Kilometer</item>
+    </string-array>
+
     <style name="ShapeAppearanceOverlay.MyApp.Button.Rounded" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>

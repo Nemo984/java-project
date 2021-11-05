@@ -68,6 +68,9 @@ public class MapsFragment extends Fragment {
     Slider radiusSlider;
     Button searchButton;
     View resetCameraBtn;
+    Spinner typeSpinner;
+    Spinner dateSpinner;
+    Spinner unitSpinner;
 
     public final String BACKEND_URL = "https://544c-125-25-13-221.ngrok.io";
     final int DEFAULT_UNIT = 1;
@@ -162,7 +165,7 @@ public class MapsFragment extends Fragment {
 
             //TODO: put timelines / cases into their own setup func.
             //On item selected listener for spinner
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                     String choice = adapterView.getItemAtPosition(position).toString();
@@ -171,6 +174,8 @@ public class MapsFragment extends Fragment {
                         sliderLayout.setVisibility(View.VISIBLE);
                         mapTimelines(googleMap);
                         searchButton.setVisibility(View.VISIBLE);
+                        dateSpinner.setVisibility(View.VISIBLE);
+                        unitSpinner.setVisibility(View.VISIBLE);
                         // TODO: put this in a func. call together with timelines setup
                         radiusSlider.addOnChangeListener(new Slider.OnChangeListener() {
                             @Override
@@ -211,7 +216,8 @@ public class MapsFragment extends Fragment {
                         googleMap.setOnMapClickListener(null);
                         searchButton.setVisibility(View.GONE);
                         sliderLayout.setVisibility(View.INVISIBLE);
-
+                        dateSpinner.setVisibility(View.INVISIBLE);
+                        unitSpinner.setVisibility(View.INVISIBLE);
                     }
                 }
 
@@ -390,7 +396,6 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private Spinner spinner;
 
     @Nullable
     @Override
@@ -429,15 +434,28 @@ public class MapsFragment extends Fragment {
 
         autocompleteFragment.setCountry("TH");
 
-        //spinner - drop down menu
-        spinner = (Spinner) getActivity().findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.map_types, R.layout.support_simple_spinner_dropdown_item);
-        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        //spinners - drop down menu
+        typeSpinner = (Spinner) getActivity().findViewById(R.id.typeSpinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.map_types, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        typeSpinner.setAdapter(adapter);
+
+        dateSpinner = (Spinner) getActivity().findViewById(R.id.dateSpinner);
+        ArrayAdapter<CharSequence> dateAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.date_types, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        dateSpinner.setAdapter(dateAdapter);
+        dateSpinner.setVisibility(View.INVISIBLE);
+
+        unitSpinner = (Spinner) getActivity().findViewById(R.id.unitSpinner);
+        ArrayAdapter<CharSequence> unitAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.unit_types, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        unitSpinner.setAdapter(unitAdapter);
+        unitSpinner.setVisibility(View.INVISIBLE);
 
         //get slider layout
         sliderLayout = (FrameLayout) getActivity().findViewById(R.id.sliderLayout);
         sliderLayout.setVisibility(View.GONE);
+
 
         //get radius slider
         radiusSlider = getActivity().findViewById(R.id.radiusSlider);

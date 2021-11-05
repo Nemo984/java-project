@@ -13,13 +13,47 @@
         android:layout_height="match_parent"
         tools:context=".MapsFragment" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/searchButton"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="51dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="37dp"
+        android:layout_marginBottom="95dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:icon="@drawable/ic_baseline_search_24"
+        app:iconPadding="0dp"
+        app:iconSize="24dp"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
+
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/dateSpinner"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="70dp"
-        android:layout_marginStart="8dp"
-        />
+        android:layout_toEndOf="@+id/typeSpinner" />
+
+    <Spinner
+        android:id="@+id/typeSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="70dp" />
+
+    <Spinner
+        android:id="@+id/unitSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="70dp"
+        android:layout_toEndOf="@+id/dateSpinner" />
 
     <ImageView
         android:id="@+id/resetCameraBtn"
@@ -27,8 +61,8 @@
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="623dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="571dp"
         android:scaleType="fitXY"
         app:srcCompat="?attr/homeAsUpIndicator" />
 
@@ -52,7 +86,7 @@
         android:id="@+id/sliderLayout"
         android:layout_width="20dp"
         android:layout_height="292dp"
-        android:layout_below="@+id/spinner"
+        android:layout_below="@+id/unitSpinner"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="19dp"
@@ -73,23 +107,5 @@
             app:tickColor="#00000000" />
 
     </FrameLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/searchButton"
-        style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="51dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="37dp"
-        android:layout_marginBottom="94dp"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        app:icon="@drawable/ic_baseline_search_24"
-        app:iconPadding="0dp"
-        app:iconSize="24dp"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
 
 </RelativeLayout>
