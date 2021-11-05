@@ -61,6 +61,7 @@ public class MapsFragment extends Fragment {
     FrameLayout sliderLayout;
     Slider radiusSlider;
     Button searchButton;
+    View resetCameraBtn;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -121,6 +122,12 @@ public class MapsFragment extends Fragment {
             } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
+
+            resetCameraBtn.setOnClickListener(view1 -> {
+                googleMap.setPadding(0, 150, 0, 0);
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(thailandBounds, 0));
+                googleMap.setPadding(0, 0, 0, 0);
+            });
 
             // Set up a PlaceSelectionListener to handle the response -- see this real!!!.
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -378,6 +385,9 @@ public class MapsFragment extends Fragment {
         //get radius slider
         radiusSlider = getActivity().findViewById(R.id.radiusSlider);
 
+        //reset camera btn;
+        resetCameraBtn = getActivity().findViewById(R.id.resetCameraBtn);
+
         searchButton = getActivity().findViewById(R.id.searchButton);
         searchButton.setVisibility(View.GONE);
 
@@ -388,5 +398,7 @@ public class MapsFragment extends Fragment {
 //
 //            }
 //        });
+
+
     }
 }

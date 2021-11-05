@@ -21,6 +21,17 @@
         android:layout_marginStart="8dp"
         />
 
+    <ImageView
+        android:id="@+id/resetCameraBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="623dp"
+        android:scaleType="fitXY"
+        app:srcCompat="?attr/homeAsUpIndicator" />
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,12 +66,11 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:rotation="270"
+            android:stepSize="1"
             android:value="0"
             android:valueFrom="0"
             android:valueTo="100"
-            android:stepSize="1"
-            app:tickColor="#00000000"
-            />
+            app:tickColor="#00000000" />
 
     </FrameLayout>
 
