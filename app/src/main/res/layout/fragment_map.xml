@@ -13,6 +13,25 @@
         android:layout_height="match_parent"
         tools:context=".MapsFragment" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dateLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="65dp"
+        android:layout_toEndOf="@+id/typeLayout"
+        android:hint="DATE FROM">
+
+        <AutoCompleteTextView
+            android:id="@+id/dateDropdown"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="none"
+            android:text="Today" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/searchButton"
         style="@style/Widget.MaterialComponents.Button.Icon"
@@ -30,30 +49,6 @@
         app:iconPadding="0dp"
         app:iconSize="24dp"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
-
-    <Spinner
-        android:id="@+id/dateSpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="70dp"
-        android:layout_toEndOf="@+id/typeSpinner" />
-
-    <Spinner
-        android:id="@+id/typeSpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="70dp" />
-
-    <Spinner
-        android:id="@+id/unitSpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="70dp"
-        android:layout_toEndOf="@+id/dateSpinner" />
 
     <ImageView
         android:id="@+id/resetCameraBtn"
@@ -86,7 +81,6 @@
         android:id="@+id/sliderLayout"
         android:layout_width="20dp"
         android:layout_height="292dp"
-        android:layout_below="@+id/unitSpinner"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="19dp"
@@ -107,5 +101,24 @@
             app:tickColor="#00000000" />
 
     </FrameLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/typeLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="65dp"
+        android:hint="TYPE">
+
+        <AutoCompleteTextView
+            android:id="@+id/typeDropdown"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="none"
+            android:text="Cases" />
+    </com.google.android.material.textfield.TextInputLayout>
 
 </RelativeLayout>
