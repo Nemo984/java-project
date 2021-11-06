@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.app.Dialog;
@@ -123,5 +124,23 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
         dateText = (TextView) myDialog.findViewById(R.id.dateTextTest);
         String date=day+"/"+month+"/"+year;
         dateText.setText(date);
+    }
+
+    public void call1(View v){
+        Intent intent2 = new Intent(Intent.ACTION_DIAL);
+        intent2.setData(Uri.parse("tel:1330"));
+        startActivity(intent2);
+    }
+
+    public void call2(View v){
+        Intent intent2 = new Intent(Intent.ACTION_DIAL);
+        intent2.setData(Uri.parse("tel:1668"));
+        startActivity(intent2);
+    }
+
+    public void call3(View v){
+        Intent intent2 = new Intent(Intent.ACTION_DIAL);
+        intent2.setData(Uri.parse("tel:1669"));
+        startActivity(intent2);
     }
 }

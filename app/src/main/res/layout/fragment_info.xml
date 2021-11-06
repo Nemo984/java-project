@@ -1,14 +1,437 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <ImageView
+        android:id="@+id/circle1"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="104dp"
+        app:srcCompat="@drawable/circle" />
+
+    <ImageView
+        android:id="@+id/circle4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="info"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"/>
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="289dp"
+        android:layout_marginEnd="300dp"
+        app:srcCompat="@drawable/circle" />
+
+    <ImageView
+        android:id="@+id/circle6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="411dp"
+        android:layout_marginEnd="300dp"
+        app:srcCompat="@drawable/circle" />
+
+    <ImageView
+        android:id="@+id/circle7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="474dp"
+        app:srcCompat="@drawable/circle" />
+
+    <ImageView
+        android:id="@+id/circle5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="350dp"
+        app:srcCompat="@drawable/circle" />
+
+    <ImageView
+        android:id="@+id/circle3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="229dp"
+        app:srcCompat="@drawable/circle" />
+
+    <ImageView
+        android:id="@+id/callBackground"
+        android:layout_width="357dp"
+        android:layout_height="92dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="542dp"
+        app:srcCompat="@drawable/ic_rectangle_28" />
+
+    <ImageView
+        android:id="@+id/background1"
+        android:layout_width="wrap_content"
+        android:layout_height="61dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="103dp"
+        app:srcCompat="@drawable/ic_rectangle_25" />
+
+    <ImageView
+        android:id="@+id/background7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="474dp"
+        app:srcCompat="@drawable/ic_rectangle_25" />
+
+    <ImageView
+        android:id="@+id/background6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="412dp"
+        android:layout_marginEnd="11dp"
+        app:srcCompat="@drawable/ic_rectangle_25" />
+
+    <ImageView
+        android:id="@+id/background5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="350dp"
+        app:srcCompat="@drawable/ic_rectangle_25" />
+
+    <ImageView
+        android:id="@+id/background4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="289dp"
+        android:layout_marginEnd="11dp"
+        app:srcCompat="@drawable/ic_rectangle_25" />
+
+    <ImageView
+        android:id="@+id/background3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="228dp"
+        app:srcCompat="@drawable/ic_rectangle_25" />
+
+    <ImageView
+        android:id="@+id/background2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="167dp"
+        android:layout_marginEnd="9dp"
+        app:srcCompat="@drawable/ic_rectangle_25" />
+
+    <TextView
+        android:id="@+id/refText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="640dp"
+        android:layout_marginEnd="17dp"
+        android:text="Ref:กรมควบคุมโรค"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/n1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/circle1"
+        android:layout_alignTop="@+id/circle1"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="14dp"
+        android:text="1"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/n3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/circle3"
+        android:layout_alignEnd="@+id/circle3"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="23dp"
+        android:text="3"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+
+    <TextView
+        android:id="@+id/n5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/circle5"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="363dp"
+        android:layout_marginEnd="23dp"
+        android:text="5"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/n4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/circle4"
+        android:layout_alignTop="@+id/circle4"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="13dp"
+        android:text="4"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/n6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/circle6"
+        android:layout_alignTop="@+id/circle6"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="14dp"
+        android:text="6"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/n7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/circle7"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="487dp"
+        android:layout_marginEnd="23dp"
+        android:text="7"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/whattodo1"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignStart="@+id/background1"
+        android:layout_alignTop="@+id/background1"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="11dp"
+        android:text="เตรียมเอกสารสำคัญ เช่น บัตรประชาชน \nเอกสารยืนยันผลตรวจโควิด"
+        android:textColor="#000000"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/whattodo2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/background2"
+        android:layout_alignTop="@+id/background2"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="13dp"
+        android:text="แจ้งเบอร์โทรศัพท์ของตนกับหน่วยงานที่รับเรื่อง\nเพื่อเข้ารับการรักษา"
+        android:textColor="#000000"
+        android:textSize="12sp" />
+
+
+    <TextView
+        android:id="@+id/whattodo3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/background3"
+        android:layout_alignEnd="@+id/background3"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="32dp"
+        android:text="งดออกจากที่พักหรือเดินทางข้ามจังหวัด \n(ฝ่าฝืนมีโทษผิดพ.ร.บ.โรคติดต่อ 2558 มาตรา 34)"
+        android:textColor="#000000"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/whattodo4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/background4"
+        android:layout_alignTop="@+id/background4"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:text="งดใกล้ชิดครอบครัวและผู้อื่น"
+        android:textColor="#000000"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/whattodo5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/background5"
+        android:layout_alignEnd="@+id/background5"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="164dp"
+        android:text="แยกห้องน้ำ(ถ้าทำได้)"
+        android:textColor="#000000"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/whattodo6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/background6"
+        android:layout_alignTop="@+id/background6"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:text="กรณีที่มีอาการไข้ \n-ให้รับประทานยาพารา -เช็ดตัวเพื่อลดไข้"
+        android:textColor="#000000"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/whattodo7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/background7"
+        android:layout_alignEnd="@+id/background7"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="50dp"
+        android:text="สวมใส่แมสก์ตลอดเวลาและแยกของใช้ส่วนตัว"
+        android:textColor="#000000"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/headerBackground"
+        android:layout_width="362dp"
+        android:layout_height="72dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="17dp"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_rectangle_14red" />
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="308dp"
+        android:layout_height="47dp"
+        android:layout_alignStart="@+id/headerBackground"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="29dp"
+        android:text="เมื่อทราบผลตรวจว่า...ติดเชื้อโควิด19\nควรทำอย่างไร?"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/circle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="167dp"
+        android:layout_marginEnd="300dp"
+        app:srcCompat="@drawable/circle" />
+
+    <TextView
+        android:id="@+id/n2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/circle2"
+        android:layout_alignTop="@+id/circle2"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="13dp"
+        android:text="2"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/callCircle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/callBackground"
+        android:layout_alignEnd="@+id/callBackground"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="280dp"
+        app:srcCompat="@drawable/call_border" />
+
+
+    <ImageView
+        android:id="@+id/callSymbol"
+        android:layout_width="45dp"
+        android:layout_height="40dp"
+        android:layout_alignTop="@+id/callCircle"
+        android:layout_alignEnd="@+id/callCircle"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="6dp"
+        app:srcCompat="@drawable/phone" />
+
+    <ImageButton
+        android:id="@+id/call1668"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignTop="@+id/callBackground"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="182dp"
+        android:layout_marginTop="38dp"
+        android:background="@null"
+        android:minHeight="48dp"
+        android:onClick="call2"
+        app:srcCompat="@drawable/b1668"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <ImageButton
+        android:id="@+id/call1330"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignTop="@+id/callBackground"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="38dp"
+        android:background="@null"
+        android:onClick="call1"
+        android:scaleType="center"
+        app:srcCompat="@drawable/b1330"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <ImageButton
+        android:id="@+id/call1669"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+
+        android:layout_alignTop="@+id/callBackground"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="267dp"
+        android:layout_marginTop="38dp"
+        android:background="@null"
+        android:onClick="call3"
+        app:srcCompat="@drawable/b1669"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="87dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/callBackground"
+        android:layout_alignEnd="@+id/callBackground"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="124dp"
+        android:text="เบอร์ฉุกเฉิน" />
 
 
 </RelativeLayout>
