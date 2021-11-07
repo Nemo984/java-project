@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +10,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -23,11 +23,11 @@ import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.api.covid.CovidApi;
 import com.example.myapplication.api.covid.ProvinceLocationHashMap;
+import com.example.myapplication.cluster.MyItem;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -48,17 +48,22 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MapsFragment extends Fragment {
 
@@ -72,8 +77,9 @@ public class MapsFragment extends Fragment {
     TextInputLayout dateLayout;
     AutoCompleteTextView dateDropdown;
 
-    public final String BACKEND_URL = "https://544c-125-25-13-221.ngrok.io";
-    final int DEFAULT_UNIT = 1;
+    public final String BACKEND_URL = "https://92d0-125-25-137-41.ngrok.io";
+    final int DEFAULT_UNIT = 1000;
+    String onType;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -129,7 +135,7 @@ public class MapsFragment extends Fragment {
             //Map each province
             try {
                 mapProvinces(googleMap);
-            } catch (JSONException | IOException e) {
+            } catch (JSONException | IOException | XmlPullParserException e) {
                 e.printStackTrace();
             }
 
@@ -148,6 +154,9 @@ public class MapsFragment extends Fragment {
                     // TODO: Get info about the selected place.
                     Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getLatLng());
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(Objects.requireNonNull(place.getViewport()), 0));
+                    if (onType.equals("Timelines")) {
+                        markerRadiusSelector(googleMap,place.getLatLng());
+                    }
                 }
 
 
@@ -163,6 +172,7 @@ public class MapsFragment extends Fragment {
             typeDropdown.setOnItemClickListener((adapterView, view, i, l) -> {
                 String choice = adapterView.getItemAtPosition(i).toString();
                 if (choice.equals("Timelines")) {
+                    onType = "Timelines";
                     showMarkers(provincesMarkers, false);
                     sliderLayout.setVisibility(View.VISIBLE);
                     mapTimelines(googleMap);
@@ -193,6 +203,7 @@ public class MapsFragment extends Fragment {
                     });
 
                 } else {
+                    onType = "Cases";
                     showMarkers(provincesMarkers, true);
                     timelinesMarkers.clear();
                     if (prevMarker != null) {
@@ -211,8 +222,15 @@ public class MapsFragment extends Fragment {
 
             //search button
             // verify + api call
+            clusterManager = new ClusterManager<>(getContext(), googleMap);
             searchButton.setOnClickListener(view -> {
                 if (prevMarker != null && prevCircle != null && prevCircle.getRadius() > 0) {
+                    // Point the map's listeners at the listeners implemented by the cluster
+                    // manager.
+                    googleMap.setOnCameraIdleListener(clusterManager);
+                    googleMap.setOnMarkerClickListener(clusterManager);
+
+
                     double latitude = prevMarker.getPosition().latitude;
                     double longitude = prevMarker.getPosition().longitude;
                     double radius = prevCircle.getRadius() / DEFAULT_UNIT;
@@ -228,26 +246,27 @@ public class MapsFragment extends Fragment {
                             for (int n = 0; n < response.length(); n++) {
                                 try {
                                     JSONObject Object = response.getJSONObject(n);
+                                    String address = Object.getString("address");
+                                    String date = Object.getString("date");
                                     double latitude = Object.getDouble("latitude");
                                     double longitude = Object.getDouble("longitude");
-                                    LatLng latLng = new LatLng(latitude, longitude);
-                                    BitmapDescriptor markerHue = getMarkerIcon("#b20000");
-                                    timelinesMarkers.add(
-                                            googleMap.addMarker(new MarkerOptions().icon(markerHue)
-                                                    .position(latLng)
-                                            ));
+                                    clusterManager.addItem(new MyItem(latitude, longitude, address, date));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
+                            clusterManager.cluster();
                         }
-                    }, error -> Log.e("Timelines",error.toString()));
+
+                    }, error -> Log.e("Timelines", error.toString()));
                     Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
 
                 }
             });
         }
     };
+    ClusterManager<MyItem> clusterManager = null;
+
 
     public int getZoomLevel(Circle circle) {
         int zoomLevel = 11;
@@ -268,7 +287,10 @@ public class MapsFragment extends Fragment {
     List<Marker> provincesMarkers = new ArrayList<>();
     List<Marker> timelinesMarkers = new ArrayList<>();
 
-    private void mapProvinces(GoogleMap googleMap) throws JSONException, IOException {
+    private void mapProvinces(GoogleMap googleMap) throws JSONException, IOException, XmlPullParserException {
+//        KmlLayer layer = new KmlLayer(googleMap, R.raw.province, getContext());
+//        layer.addLayerToMap();
+
         HashMap<String, Double[]> provinceLocationMap = ProvinceLocationHashMap.getMap();
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES_PROVINCES, null, response -> {
             for (int n = 0; n < response.length(); n++) {
@@ -320,7 +342,7 @@ public class MapsFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-        }, error -> Log.e("Timelines",error.toString()));
+        }, error -> Log.e("Timelines", error.toString()));
         Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
 
     }
@@ -329,20 +351,21 @@ public class MapsFragment extends Fragment {
     Circle prevCircle;
 
     public void mapTimelines(GoogleMap googleMap) {
-
         googleMap.setOnMapClickListener(point -> {
-            if (prevMarker != null) {
-                prevMarker.remove();
-            }
-            radiusSlider.setValue(0);
-            if (prevCircle != null) {
-                prevCircle.remove();
-                prevCircle = null;
-            }
-            prevMarker = googleMap.addMarker(new MarkerOptions().position(point));
+            markerRadiusSelector(googleMap,point);
         });
+    }
 
-
+    public void markerRadiusSelector(GoogleMap googleMap, LatLng point) {
+        if (prevMarker != null) {
+            prevMarker.remove();
+        }
+        radiusSlider.setValue(0);
+        if (prevCircle != null) {
+            prevCircle.remove();
+            prevCircle = null;
+        }
+        prevMarker = googleMap.addMarker(new MarkerOptions().position(point).icon(getMarkerIcon("#800080")));
     }
 
 
@@ -361,7 +384,6 @@ public class MapsFragment extends Fragment {
 
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
-
 
 
     @Override
