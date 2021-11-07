@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,7 +48,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
+import com.google.maps.android.collections.MarkerManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,11 +58,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MapsFragment extends Fragment {
 
@@ -79,7 +76,7 @@ public class MapsFragment extends Fragment {
 
     public final String BACKEND_URL = "https://92d0-125-25-137-41.ngrok.io";
     final int DEFAULT_UNIT = 1000;
-    String onType;
+    String onType = "Cases";
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -103,7 +100,11 @@ public class MapsFragment extends Fragment {
             googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(thailandBounds, 0));
             googleMap.setPadding(0, 0, 0, 0);
 
-            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            markerManager = new MarkerManager(googleMap);
+            provinceMarkers = markerManager.newCollection();
+
+
+            provinceMarkers.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
                 public View getInfoWindow(@NonNull Marker arg0) {
                     return null;
@@ -132,6 +133,7 @@ public class MapsFragment extends Fragment {
                 }
             });
 
+
             //Map each province
             try {
                 mapProvinces(googleMap);
@@ -155,7 +157,7 @@ public class MapsFragment extends Fragment {
                     Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getLatLng());
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(Objects.requireNonNull(place.getViewport()), 0));
                     if (onType.equals("Timelines")) {
-                        markerRadiusSelector(googleMap,place.getLatLng());
+                        markerRadiusSelector(googleMap, place.getLatLng());
                     }
                 }
 
@@ -173,16 +175,13 @@ public class MapsFragment extends Fragment {
                 String choice = adapterView.getItemAtPosition(i).toString();
                 if (choice.equals("Timelines")) {
                     onType = "Timelines";
-                    showMarkers(provincesMarkers, false);
+                    provinceMarkers.hideAll();
                     sliderLayout.setVisibility(View.VISIBLE);
                     mapTimelines(googleMap);
                     searchButton.setVisibility(View.VISIBLE);
                     dateLayout.setVisibility(View.VISIBLE);
                     // TODO: put this in a func. call together with timelines setup
                     radiusSlider.addOnChangeListener((slider, value, fromUser) -> {
-                        if (value <= 0) {
-                            return;
-                        }
                         if (prevMarker != null && prevCircle == null) {
                             CircleOptions circleOptions = new CircleOptions()
                                     .center(new LatLng(prevMarker.getPosition().latitude, prevMarker.getPosition().longitude))
@@ -192,19 +191,24 @@ public class MapsFragment extends Fragment {
                                     .strokeWidth(0);
 
                             prevCircle = googleMap.addCircle(circleOptions);
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                    circleOptions.getCenter(), getZoomLevel(prevCircle)));
+                            if (value != 0) {
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                        circleOptions.getCenter(), getZoomLevel(prevCircle)));
+                            }
 
                         } else if (prevMarker != null) {
                             prevCircle.setRadius(DEFAULT_UNIT * value);
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                    prevCircle.getCenter(), getZoomLevel(prevCircle)));
+                            if (value != 0) {
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                        prevCircle.getCenter(), getZoomLevel(prevCircle)));
+                            }
+
                         }
                     });
 
                 } else {
                     onType = "Cases";
-                    showMarkers(provincesMarkers, true);
+                    provinceMarkers.showAll();
                     timelinesMarkers.clear();
                     if (prevMarker != null) {
                         prevMarker.remove();
@@ -213,6 +217,7 @@ public class MapsFragment extends Fragment {
                     if (prevCircle != null) {
                         prevCircle.remove();
                     }
+                    clusterManager.clearItems();
                     googleMap.setOnMapClickListener(null);
                     searchButton.setVisibility(View.GONE);
                     sliderLayout.setVisibility(View.INVISIBLE);
@@ -266,7 +271,7 @@ public class MapsFragment extends Fragment {
         }
     };
     ClusterManager<MyItem> clusterManager = null;
-
+    MarkerManager markerManager = null;
 
     public int getZoomLevel(Circle circle) {
         int zoomLevel = 11;
@@ -288,8 +293,6 @@ public class MapsFragment extends Fragment {
     List<Marker> timelinesMarkers = new ArrayList<>();
 
     private void mapProvinces(GoogleMap googleMap) throws JSONException, IOException, XmlPullParserException {
-//        KmlLayer layer = new KmlLayer(googleMap, R.raw.province, getContext());
-//        layer.addLayerToMap();
 
         HashMap<String, Double[]> provinceLocationMap = ProvinceLocationHashMap.getMap();
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES_PROVINCES, null, response -> {
@@ -332,12 +335,11 @@ public class MapsFragment extends Fragment {
                         markerHue = getMarkerIcon("#ff2299");
                     }
 
-                    provincesMarkers.add(
-                            googleMap.addMarker(new MarkerOptions().icon(markerHue)
-                                    .position(provincePos)
-                                    .title(province)
-                                    .snippet(new String(covidInfo)))
-                    );
+                    provinceMarkers.addMarker(new MarkerOptions().icon(markerHue)
+                            .position(provincePos)
+                            .title(province)
+                            .snippet(new String(covidInfo)));
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -352,7 +354,7 @@ public class MapsFragment extends Fragment {
 
     public void mapTimelines(GoogleMap googleMap) {
         googleMap.setOnMapClickListener(point -> {
-            markerRadiusSelector(googleMap,point);
+            markerRadiusSelector(googleMap, point);
         });
     }
 
@@ -368,14 +370,6 @@ public class MapsFragment extends Fragment {
         prevMarker = googleMap.addMarker(new MarkerOptions().position(point).icon(getMarkerIcon("#800080")));
     }
 
-
-    public void showMarkers(List<Marker> markers, boolean bool) {
-        for (Marker marker : markers) {
-            marker.setVisible(bool);
-        }
-    }
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -385,6 +379,7 @@ public class MapsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
+    MarkerManager.Collection provinceMarkers;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -394,6 +389,7 @@ public class MapsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+
 
         // Initialize the AutocompleteSupportFragment.
         Places.initialize(getActivity().getApplicationContext(), "AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY");
