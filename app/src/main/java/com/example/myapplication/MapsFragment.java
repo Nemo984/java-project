@@ -102,16 +102,15 @@ public class MapsFragment extends Fragment {
 
             markerManager = new MarkerManager(googleMap);
             provinceMarkers = markerManager.newCollection();
-
-
             provinceMarkers.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
-                public View getInfoWindow(@NonNull Marker arg0) {
+                public View getInfoWindow(Marker arg0) {
                     return null;
                 }
 
                 @Override
-                public View getInfoContents(@NonNull Marker marker) {
+                public View getInfoContents(Marker marker) {
+                    Log.i("province","I'm here fucker");
                     Context mContext = getContext();
                     LinearLayout info = new LinearLayout(mContext);
                     info.setOrientation(LinearLayout.VERTICAL);
@@ -132,7 +131,6 @@ public class MapsFragment extends Fragment {
                     return info;
                 }
             });
-
 
             //Map each province
             try {
@@ -155,7 +153,7 @@ public class MapsFragment extends Fragment {
                 public void onPlaceSelected(@NonNull Place place) {
                     // TODO: Get info about the selected place.
                     Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getLatLng());
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(Objects.requireNonNull(place.getViewport()), 0));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(place.getViewport(), 100));
                     if (onType.equals("Timelines")) {
                         markerRadiusSelector(googleMap, place.getLatLng());
                     }
