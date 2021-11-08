@@ -74,7 +74,7 @@ public class MapsFragment extends Fragment {
     TextInputLayout dateLayout;
     AutoCompleteTextView dateDropdown;
 
-    public final String BACKEND_URL = "https://92d0-125-25-137-41.ngrok.io";
+    public final String BACKEND_URL = getString(R.string.backend_url);
     final int DEFAULT_UNIT = 1000;
     String onType = "Cases";
 
@@ -104,13 +104,12 @@ public class MapsFragment extends Fragment {
             provinceMarkers = markerManager.newCollection();
             provinceMarkers.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
-                public View getInfoWindow(Marker arg0) {
+                public View getInfoWindow(@NonNull Marker arg0) {
                     return null;
                 }
 
                 @Override
-                public View getInfoContents(Marker marker) {
-                    Log.i("province","I'm here fucker");
+                public View getInfoContents(@NonNull Marker marker) {
                     Context mContext = getContext();
                     LinearLayout info = new LinearLayout(mContext);
                     info.setOrientation(LinearLayout.VERTICAL);
