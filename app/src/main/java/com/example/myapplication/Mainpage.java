@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -14,11 +15,14 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -28,6 +32,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
 
     Dialog myDialog;
     EditText editText;
+    TextView Lat;
     private TextView dateText;
 
     @Override
@@ -42,6 +47,21 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
 
         myDialog = new Dialog(this);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==100 && resultCode==RESULT_OK){
+            Place place=Autocomplete.getPlaceFromIntent(data);
+            editText.setText(place.getName());
+            Lat.setText(String.valueOf(place.getLatLng()));
+        }
+        else if(resultCode== AutocompleteActivity.RESULT_ERROR){
+            Status status=Autocomplete.getStatusFromIntent(data);
+            Toast.makeText(getApplicationContext(),status.getStatusMessage(),Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     private void showDate(){
@@ -67,11 +87,12 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
         });
         Places.initialize(getApplicationContext(), "AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY");
         editText = (EditText) myDialog.findViewById(R.id.edit_text);
+        Lat = (TextView) myDialog.findViewById(R.id.LatLong);
         editText.setFocusable(false);
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Place.Field> fieldsList = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                List<Place.Field> fieldsList = Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG, Place.Field.NAME);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldsList).build(Mainpage.this);
                 startActivityForResult(intent, 100);
             }
