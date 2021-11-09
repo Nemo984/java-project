@@ -1,18 +1,92 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.myapplication.api.covid.CovidApi;
+import com.example.myapplication.cluster.MyItem;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Home extends Fragment {
+    HashMap<String, ArrayList<Integer>> data_provice = new HashMap<String, ArrayList<Integer>>();
+    SwipeRefreshLayout swipe;
+    TextView new_infected_p;
+    JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES_PROVINCES, null, new Response.Listener<JSONArray>() {
+        @Override
+        public void onResponse(JSONArray response) {
+            for (int n = 0; n < response.length(); n++) {
+                try {
+                    JSONObject object = response.getJSONObject(n);
+                    String province = object.getString("province");
+                    Integer new_case = object.getInt("new_case");
+                    Integer new_death = object.getInt("new_death");
+                    Integer total_case = object.getInt("total_case");
+                    Integer total_death = object.getInt("total_death");
+                    ArrayList<Integer> data = new ArrayList<Integer>();
+                    data.add(new_case);
+                    data.add(new_death);
+                    data.add(total_case);
+                    data.add(total_death);
+                    data_provice.put(province, data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            new_infected_p.setText(String.valueOf(data_provice.size()));
+            swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            swipe.setRefreshing(false);
+                        }
+                    }, 1000);
+                }
+            });
+        }
+
+    }, error -> Log.e("Timelines", error.toString()));
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container,false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        swipe = (SwipeRefreshLayout) getActivity().findViewById(R.id.swiperefresh);
+        new_infected_p = (TextView) getActivity().findViewById(R.id.new_infected_province);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
+        SearchView searchView = (SearchView) getActivity().findViewById(R.id.search);
+//        searchView.setSuggestionsAdapter(arrayAdapter);
     }
 }

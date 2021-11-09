@@ -1,14 +1,459 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Home"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"/>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <SearchView
+                            android:layout_width="233dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/search">
+                        </SearchView>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/label_update"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="อัพเดทล่าสุด"
+                                android:textAlignment="textEnd"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/date_update"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="9/10/2564"
+                                android:textAlignment="textEnd"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="176dp"
+                            android:layout_height="167dp"
+                            android:background="@drawable/ic_rectangle_10"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/label1_province_infected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="ผู้ติดเชื้อในจังหวัด"
+
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/label2_province_infected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="ผู้ติดเชื้อวันนี้"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/new_infected_province"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="+12,456"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/label3_province_infected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="สะสม"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/total_infected_province"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="123,456"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="176dp"
+                            android:layout_height="167dp"
+                            android:background="@drawable/ic_rectangle_10"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/label1_country_infected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="ผู้ติดเชื้อในประเทศ"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="19sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/label2_country_infected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="ผู้ติดเชื้อวันนี้"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/new_infected_country"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="+12,456"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/label3_country_infected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="สะสม"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/total_infected_country"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="123,456"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="355dp"
+                        android:layout_height="84dp"
+                        android:background="@drawable/ic_rectangle_7"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="176dp"
+                            android:layout_height="167dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/label1_recovered"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="7dp"
+                                android:text="หายป่วยวันนี้"
+                                android:textAlignment="viewEnd"
+                                android:textColor="@color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/new_recovered"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="+10,543"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/label2_recovered"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="7dp"
+                                android:text="สะสม"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/total_recovered"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="1,574,854"
+                                android:textAlignment="textEnd"
+                                android:textColor="#FFFFFF"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="176dp"
+                            android:layout_height="128dp"
+                            android:background="@drawable/ic_rectangle_8"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/label1_death_province"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="ผู้เสียชีวิตในจังหวัด"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="19sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/new_death_province"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="+12,456"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/label2_death_province"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="สะสม"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/total_death_province"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="123,456"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="176dp"
+                            android:layout_height="128dp"
+                            android:background="@drawable/ic_rectangle_8"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/label1_death_country"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="ผู้เสียชีวิตในประเทศ"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/new_death_country"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="+12,456"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/label2_death_country"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="สะสม"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/total_death_country"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="7dp"
+                                android:text="123,456"
+                                android:textAlignment="textEnd"
+                                android:textColor="@color/white"
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="500dp"
+                        android:background="@drawable/ic_rectangle_11__1_"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/label_news"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="ข่าวสาร"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="6dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/image_news_1"
+                                android:layout_width="160dp"
+                                android:layout_height="128dp"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_weight="1"
+                                tools:src="@drawable/ic_rectangle_10" />
+
+                            <TextView
+                                android:id="@+id/News_1"
+                                android:layout_width="211dp"
+                                android:layout_height="127dp"
+                                android:layout_marginEnd="20dp"
+                                android:layout_weight="1"
+                                android:text='"ดร.อนันต์ เปิดข้อมูลการฉีดวัคซีนโควิด-19 เข็มกระตุ้นเกินความจำเป็น อาจจะเกิดผลเสียมากกว่าผลดี' />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/image_news_2"
+                                android:layout_width="167dp"
+                                android:layout_height="128dp"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_weight="1"
+                                tools:src="@drawable/ic_rectangle_10" />
+
+                            <TextView
+                                android:id="@+id/News_2"
+                                android:layout_width="215dp"
+                                android:layout_height="127dp"
+                                android:layout_marginEnd="20dp"
+                                android:layout_weight="1"
+                                android:text="ภาพรวมโควิดทั่วประเทศลดลง แต่สูงกว่าค่าเฉลี่ย 7 วัน เสียชีวิตเหลือ 73 ราย พบ 32 จังหวัดติดเกินร้อย กทม.ยังหลักพัน ส่วนยอดฉีดวัคซีนทะลุ 1 ล้านโดส" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>
