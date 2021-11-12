@@ -74,11 +74,15 @@ public class MapsFragment extends Fragment {
     TextInputLayout dateLayout;
     AutoCompleteTextView dateDropdown;
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
     public final String BACKEND_URL = "https://764e-125-24-184-202.ngrok.io";
 =======
     public final String BACKEND_URL = getString(R.string.backend_url);
 >>>>>>> e2cb2aecdb00875b7d875641e427646f73c3a355
+=======
+    public final String BACKEND_URL = "";
+>>>>>>> Stashed changes
     final int DEFAULT_UNIT = 1000;
     String onType = "Cases";
 
