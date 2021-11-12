@@ -74,7 +74,11 @@ public class MapsFragment extends Fragment {
     TextInputLayout dateLayout;
     AutoCompleteTextView dateDropdown;
 
+<<<<<<< HEAD
     public final String BACKEND_URL = "https://764e-125-24-184-202.ngrok.io";
+=======
+    public final String BACKEND_URL = getString(R.string.backend_url);
+>>>>>>> e2cb2aecdb00875b7d875641e427646f73c3a355
     final int DEFAULT_UNIT = 1000;
     String onType = "Cases";
 
@@ -102,8 +106,6 @@ public class MapsFragment extends Fragment {
 
             markerManager = new MarkerManager(googleMap);
             provinceMarkers = markerManager.newCollection();
-
-
             provinceMarkers.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
                 public View getInfoWindow(@NonNull Marker arg0) {
@@ -133,7 +135,6 @@ public class MapsFragment extends Fragment {
                 }
             });
 
-
             //Map each province
             try {
                 mapProvinces(googleMap);
@@ -155,7 +156,7 @@ public class MapsFragment extends Fragment {
                 public void onPlaceSelected(@NonNull Place place) {
                     // TODO: Get info about the selected place.
                     Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getLatLng());
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(Objects.requireNonNull(place.getViewport()), 0));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(place.getViewport(), 100));
                     if (onType.equals("Timelines")) {
                         markerRadiusSelector(googleMap, place.getLatLng());
                     }
