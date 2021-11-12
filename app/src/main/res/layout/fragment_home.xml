@@ -29,14 +29,18 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="48dp"
                         android:orientation="horizontal">
 
-                        <SearchView
+                        <AutoCompleteTextView
+                            android:id="@+id/seach_province"
                             android:layout_width="233dp"
                             android:layout_height="match_parent"
-                            android:id="@+id/search">
-                        </SearchView>
+                            android:hint="เลือกจังหวัด"
+                            android:completionThreshold="1"
+                            android:singleLine="true"
+                            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck">
+                        </AutoCompleteTextView>
 
                         <LinearLayout
                             android:layout_width="match_parent"

@@ -6,9 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,12 +31,48 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Home extends Fragment {
     HashMap<String, ArrayList<Integer>> data_provice = new HashMap<String, ArrayList<Integer>>();
+    HashMap<String, Integer> data_today = new HashMap<String, Integer>();
+    ArrayList<String> province_list = new ArrayList<>(Arrays.asList("Select Province","กระบี่","กรุงเทพมหานคร","กาญจนบุรี"
+            ,"กาฬสินธุ์", "กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท"
+            , "ชัยภูมิ","ชุมพร", "ตรัง", "ตราด", "ตาก", "นครนายก", "นครปฐม", "นครพนม", "นครราชสีมา"
+            , "นครศรีธรรมราช", "นครสวรรค์", "นนทบุรี", "นราธิวาส", "น่าน", "บึงกาฬ", "บุรีรัมย์", "ปทุมธานี", "ประจวบคีรีขันธ์", "ปราจีนบุรี", "ปัตตานี"
+            , "พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","ภูเก็ต","มหาสารคาม","มุกดาหาร","ยะลา","ยโสธร","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง"
+            ,"ลำพูน","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระบุรี","สระแก้ว","สิงห์บุรี","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","สุโขทัย","หนองคาย"
+            ,"หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี","เชียงราย","เชียงใหม่","เพชรบุรี","เพชรบูรณ์","เลย","แพร่","แม่ฮ่องสอน"));
     SwipeRefreshLayout swipe;
     TextView new_infected_p;
+    TextView total_infected_province;
+    TextView new_death_province;
+    TextView total_death_province;
+    TextView new_infected_country;
+    TextView total_infected_country;
+    TextView new_death_country;
+    TextView total_death_country;
+    AutoCompleteTextView search_province;
+    ArrayAdapter<String> adapter;
+    JsonArrayRequest jsonArrayRequest_today = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES, null, new Response.Listener<JSONArray>() {
+        @Override
+        public void onResponse(JSONArray response) {
+            try {
+                JSONObject object = response.getJSONObject(0);
+                data_today.put("new_case", object.getInt("new_case"));
+                data_today.put("total_case", object.getInt("total_case"));
+                data_today.put("new_death", object.getInt("new_death"));
+                data_today.put("total_death", object.getInt("total_death"));
+                data_today.put("new_recovered", object.getInt("new_recovered"));
+                data_today.put("total_recovered", object.getInt("total_recovered"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }, error -> Log.e("Timelines", error.toString()));
+
     JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES_PROVINCES, null, new Response.Listener<JSONArray>() {
         @Override
         public void onResponse(JSONArray response) {
@@ -54,7 +94,9 @@ public class Home extends Fragment {
                     e.printStackTrace();
                 }
             }
-            new_infected_p.setText(String.valueOf(data_provice.size()));
+
+            //new_infected_p.setText(String.valueOf(data_provice.size()));
+
             swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -79,14 +121,44 @@ public class Home extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         swipe = (SwipeRefreshLayout) getActivity().findViewById(R.id.swiperefresh);
+        // Textview For province
         new_infected_p = (TextView) getActivity().findViewById(R.id.new_infected_province);
+        total_infected_province = (TextView) getActivity().findViewById(R.id.total_infected_province);
+        new_death_province = (TextView) getActivity().findViewById(R.id.new_death_province);
+        total_death_province = (TextView) getActivity().findViewById(R.id.total_death_province);
+
+        // Textview For country
+        new_infected_country = (TextView) getActivity().findViewById(R.id.new_infected_country);
+        total_infected_country = (TextView) getActivity().findViewById(R.id.total_infected_country);
+        new_death_country = (TextView) getActivity().findViewById(R.id.new_death_country);
+        total_death_country = (TextView) getActivity().findViewById(R.id.total_death_country);
+
+        // Set Country Textview
+        new_infected_country.setText(data_today.get("new_case").toString());
+        total_infected_country.setText(data_today.get("total_case").toString());
+        new_death_country.setText(data_today.get("new_death").toString());
+        total_death_country.setText(data_today.get("total_death").toString());
+
+        search_province = (AutoCompleteTextView) getActivity().findViewById(R.id.seach_province);
+        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, province_list);
+        search_province.setAdapter(adapter);
+        search_province.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String province = parent.getItemAtPosition(position).toString();
+                new_infected_p.setText((data_provice.get(province)).get(0).toString());
+                total_infected_province.setText((data_provice.get(province)).get(0).toString(2));
+                new_death_province.setText((data_provice.get(province)).get(1).toString());
+                total_death_province.setText((data_provice.get(province)).get(3).toString());
+
+            }
+        });
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
-        SearchView searchView = (SearchView) getActivity().findViewById(R.id.search);
-//        searchView.setSuggestionsAdapter(arrayAdapter);
+        Volley.newRequestQueue(getContext()).add(jsonArrayRequest_today);
     }
 }
