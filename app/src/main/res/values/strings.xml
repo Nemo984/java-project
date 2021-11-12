@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Simple Covid</string>
     <string name="google_maps_key">AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY</string>
-    <string name = "backend_url">df</string>
+    <string name = "backend_url">sd</string>
 
     <string-array name="map_types">
         <item>Cases</item>
@@ -21,5 +21,5 @@
     <style name="ShapeAppearanceOverlay.MyApp.Button.Rounded" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
-    </style>
+    </style>  
 </resources>

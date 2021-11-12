@@ -26,6 +26,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.api.covid.CovidApi;
 import com.example.myapplication.api.covid.ProvinceLocationHashMap;
+import com.example.myapplication.api.timelines.TimelineApiProvider;
 import com.example.myapplication.cluster.MyItem;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -74,15 +75,8 @@ public class MapsFragment extends Fragment {
     TextInputLayout dateLayout;
     AutoCompleteTextView dateDropdown;
 
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-    public final String BACKEND_URL = "https://764e-125-24-184-202.ngrok.io";
-=======
+
     public final String BACKEND_URL = getString(R.string.backend_url);
->>>>>>> e2cb2aecdb00875b7d875641e427646f73c3a355
-=======
-    public final String BACKEND_URL = "";
->>>>>>> Stashed changes
     final int DEFAULT_UNIT = 1000;
     String onType = "Cases";
 
@@ -394,7 +388,7 @@ public class MapsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
-
+//        BACKEND_URL = getActivity().getString(R.string.backend_url);
 
         // Initialize the AutocompleteSupportFragment.
         Places.initialize(getActivity().getApplicationContext(), "AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY");
@@ -442,6 +436,76 @@ public class MapsFragment extends Fragment {
 
         searchButton.setVisibility(View.INVISIBLE);
 
+        //timeline api provider test
+        TimelineApiProvider timelineApiProvider = new TimelineApiProvider(BACKEND_URL, getContext());
+        timelineApiProvider.createTimeline("2fa3g", "2020-02-25", "Dreamworld", 131.1142, 151.412, response -> {
+            try {
+                //stored the id
+                String id = response.getString("id");
+                Log.i("jsonresponse", id);
+                String user_id = response.getString("uid");
+                Log.i("jsonresponse", user_id);
+                String address = response.getString("address");
+                Log.i("jsonresponse", address);
+                String date = response.getString("date");
+                Log.i("jsonresponse", date);
+                double latitude = response.getDouble("latitude");
+                Log.i("jsonresponse", String.valueOf(latitude));
+                double longitude = response.getDouble("longitude");
+                Log.i("jsonresponse", String.valueOf(longitude));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> Log.e("postTimeline", error.toString()));
+
+        timelineApiProvider.deleteTimelineById("c015b498-6ea4-43e8-93a3-bf662787868c", response -> {
+            //Deleted OK, do something here...
+            Log.i("deleteTimeline","This is deleted");
+        }, error -> {
+            Log.e("deleteTimeline", error.toString());
+        });
+
+        timelineApiProvider.updateTimelineById("85d5508d-7f78-421e-8004-d9ff6af8a6f4","2021-03-13","disney land",453.34312,23.1242, response -> {
+            try {
+                //stored the id
+                String id = response.getString("id");
+                Log.i("jsonresponse", id);
+                String user_id = response.getString("uid");
+                Log.i("jsonresponse", user_id);
+                String address = response.getString("address");
+                Log.i("jsonresponse", address);
+                String date = response.getString("date");
+                Log.i("jsonresponse", date);
+                double latitude = response.getDouble("latitude");
+                Log.i("jsonresponse", String.valueOf(latitude));
+                double longitude = response.getDouble("longitude");
+                Log.i("jsonresponse", String.valueOf(longitude));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            Log.e("putTimeline", error.toString());
+        });
+
+        timelineApiProvider.getTimelinesByUserId("2fa3g", response -> {
+            for (int i = 0; i < response.length(); i++) {
+                try {
+                    JSONObject Object = response.getJSONObject(i);
+                    String id = Object.getString("id");
+                    Log.i("getArray", id);
+                    String address = Object.getString("address");
+                    Log.i("getArray", address);
+                    String date = Object.getString("date");
+                    Log.i("getArray", date);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, error -> Log.e("getArray", error.toString()));
 
     }
+
+
 }

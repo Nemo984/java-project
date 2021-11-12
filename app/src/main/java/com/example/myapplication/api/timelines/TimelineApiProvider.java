@@ -29,7 +29,7 @@ public class TimelineApiProvider {
     /**
      * Get timelines by android id
      * @param user_id android id
-     * @param callback response with JSONArray callback - [JSONObject,...] object with id, date, address, latitude, longitude
+     * @param callback response with JSONArray callback - [JSONObject,...] object with id, date, address
      * @param errorCallback error callback - handle the error
      */
     public void getTimelinesByUserId(String user_id, Response.Listener<JSONArray> callback, Response.ErrorListener errorCallback) {
@@ -49,7 +49,7 @@ public class TimelineApiProvider {
      * @param callback callback with JSONObject returning id, uid, date, address, latitude, longitude
      * @param errorCallback error callback
      */
-    public void createTimeline(String user_id,String date, String address, double latitude, double longitude, Response.Listener<JSONObject> callback, Response.ErrorListener errorCallback) {
+    public void createTimeline(String user_id, String date, String address, double latitude, double longitude, Response.Listener<JSONObject> callback, Response.ErrorListener errorCallback) {
         JSONObject postData = new JSONObject();
         try {
             postData.put("uid",user_id);
