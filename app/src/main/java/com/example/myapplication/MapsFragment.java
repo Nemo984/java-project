@@ -76,7 +76,7 @@ public class MapsFragment extends Fragment {
     AutoCompleteTextView dateDropdown;
 
 
-    public final String BACKEND_URL = getString(R.string.backend_url);
+    public final String BACKEND_URL = getActivity().getString(R.string.backend_url);
     final int DEFAULT_UNIT = 1000;
     String onType = "Cases";
 

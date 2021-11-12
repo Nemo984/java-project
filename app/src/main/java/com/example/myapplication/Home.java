@@ -134,10 +134,10 @@ public class Home extends Fragment {
         total_death_country = (TextView) getActivity().findViewById(R.id.total_death_country);
 
         // Set Country Textview
-        new_infected_country.setText(data_today.get("new_case").toString());
-        total_infected_country.setText(data_today.get("total_case").toString());
-        new_death_country.setText(data_today.get("new_death").toString());
-        total_death_country.setText(data_today.get("total_death").toString());
+//        new_infected_country.setText(data_today.get("new_case").toString());
+//        total_infected_country.setText(data_today.get("total_case").toString());
+//        new_death_country.setText(data_today.get("new_death").toString());
+//        total_death_country.setText(data_today.get("total_death").toString());
 
         search_province = (AutoCompleteTextView) getActivity().findViewById(R.id.seach_province);
         adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, province_list);
