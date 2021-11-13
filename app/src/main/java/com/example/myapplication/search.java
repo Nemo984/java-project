@@ -19,6 +19,4 @@ public class search extends Fragment {
 
 
     }
-
-
 }

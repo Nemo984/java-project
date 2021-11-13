@@ -41,6 +41,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     TextView Lat;
     double lat,Long;
     private TextView dateText;
+<<<<<<< Updated upstream
     private String android_id;
     String name, day1;
     ExpandableListView expandableListView1;
@@ -48,14 +49,17 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     HashMap<String,ArrayList<String>> listC = new HashMap<>();
     MainAdapter adapter ;
 
+=======
+    Home home;
+>>>>>>> Stashed changes
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainpage);
-
+        home = new Home();
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navi);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new Home()).commit();
+                home).commit();
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         android_id = Secure.getString(getApplicationContext().getContentResolver(),Secure.ANDROID_ID);
         View view = LayoutInflater.from(getApplication()).inflate(R.layout.fragment_search, null);
@@ -178,7 +182,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
 
                     switch (item.getItemId()){
                         case R.id.nav_home:
-                            selectedFragment = new Home();
+                            selectedFragment = home;
                             break;
                         case R.id.nav_map:
                             selectedFragment = new MapsFragment();
