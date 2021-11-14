@@ -26,8 +26,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.api.covid.CovidApi;
+import com.example.myapplication.api.covid.NewsApi;
 import com.example.myapplication.cluster.MyItem;
 
 import org.json.JSONArray;
@@ -40,6 +42,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Home extends Fragment {
+    // Variables that used
     HashMap<String, ArrayList<Integer>> data_provice = new HashMap<String, ArrayList<Integer>>();
     HashMap<String, Integer> data_today = new HashMap<String, Integer>();
     ArrayList<String> province_list = new ArrayList<>(Arrays.asList("Select Province","กระบี่","กรุงเทพมหานคร","กาญจนบุรี"
@@ -60,6 +63,9 @@ public class Home extends Fragment {
     TextView total_death_country;
     TextView new_recovered;
     TextView total_recovered;
+    TextView News_1;
+    TextView News_2;
+
     AutoCompleteTextView search_province;
     TextView date_update;
     Calendar calendar;
@@ -120,8 +126,6 @@ public class Home extends Fragment {
             date = dateFormat.format(calendar.getTime());
             date_update.setText(date);
 
-            //new_infected_p.setText(String.valueOf(data_provice.size()));
-
             swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -133,7 +137,6 @@ public class Home extends Fragment {
                             date = dateFormat.format(calendar.getTime());
                             date_update.setText(date);
                             swipe.setRefreshing(false);
-
                         }
                     }, 1000);
                 }
@@ -141,6 +144,21 @@ public class Home extends Fragment {
         }
 
     }, error -> Log.e("Timelines", error.toString()));
+
+    JsonObjectRequest NewsJsonRequest = new JsonObjectRequest(Request.Method.GET, NewsApi.NEWS, null, new Response.Listener<JSONObject>() {
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+                News_1.setText(String.valueOf(((JSONArray) response.get("articles")).getJSONObject(0).get("description")));
+                News_2.setText(String.valueOf(((JSONArray) response.get("articles")).getJSONObject(1).get("description")));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }, error -> Log.e("Timelines", error.toString()));
+
+    // Methods
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -153,7 +171,9 @@ public class Home extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
         Volley.newRequestQueue(getContext()).add(jsonArrayRequest_today);
+        Volley.newRequestQueue(getContext()).add(NewsJsonRequest);
         swipe = (SwipeRefreshLayout) getActivity().findViewById(R.id.swiperefresh);
+
         // Textview For Province
         new_infected_p = (TextView) getActivity().findViewById(R.id.new_infected_province);
         total_infected_province = (TextView) getActivity().findViewById(R.id.total_infected_province);
@@ -168,16 +188,12 @@ public class Home extends Fragment {
         new_recovered = (TextView) getActivity().findViewById(R.id.new_recovered);
         total_recovered = (TextView) getActivity().findViewById(R.id.total_recovered);
 
-<<<<<<< Updated upstream
-        // Set Country Textview
-//        new_infected_country.setText(data_today.get("new_case").toString());
-//        total_infected_country.setText(data_today.get("total_case").toString());
-//        new_death_country.setText(data_today.get("new_death").toString());
-//        total_death_country.setText(data_today.get("total_death").toString());
-=======
         // Textview For Date Update
         date_update = (TextView) getActivity().findViewById(R.id.date_update);
->>>>>>> Stashed changes
+
+        // Textview for News
+        News_1 = (TextView) getActivity().findViewById(R.id.News_1);
+        News_2 = (TextView) getActivity().findViewById(R.id.News_2);
 
         search_province = (AutoCompleteTextView) getActivity().findViewById(R.id.seach_province);
         adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, province_list);
@@ -187,6 +203,7 @@ public class Home extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String province = parent.getItemAtPosition(position).toString();
+                // Set province Textview
                 new_infected_p.setText("+ " + new DecimalFormat("###,###,###").format((data_provice.get(province)).get(0)).toString());
                 total_infected_province.setText(new DecimalFormat("###,###,###").format((data_provice.get(province)).get(2)).toString());
                 new_death_province.setText("+ " + new DecimalFormat("###,###,###").format((data_provice.get(province)).get(1)).toString());

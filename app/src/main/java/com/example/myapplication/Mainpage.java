@@ -41,17 +41,13 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     TextView Lat;
     double lat,Long;
     private TextView dateText;
-<<<<<<< Updated upstream
     private String android_id;
     String name, day1;
     ExpandableListView expandableListView1;
     ArrayList<String> list = new ArrayList<>();
     HashMap<String,ArrayList<String>> listC = new HashMap<>();
     MainAdapter adapter ;
-
-=======
     Home home;
->>>>>>> Stashed changes
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
