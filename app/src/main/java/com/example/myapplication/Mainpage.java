@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import static android.os.SystemClock.sleep;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -31,6 +33,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Delayed;
 
 public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -156,22 +159,24 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
 
                     switch (item.getItemId()){
                         case R.id.nav_home:
+                            home.ClearData();
                             selectedFragment = home;
                             break;
                         case R.id.nav_map:
                             selectedFragment = new MapsFragment();
+                            home.ClearData();
                             break;
                         case R.id.nav_info:
                             selectedFragment = new info();
+                            home.ClearData();
                             break;
                         case R.id.nav_time:
                             selectedFragment = new search();
+                            home.ClearData();
                             break;
                     }
-
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
-
+                                selectedFragment).commit();
                     return true;
                 }
             };
