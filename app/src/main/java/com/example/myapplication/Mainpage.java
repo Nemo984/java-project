@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -40,14 +41,13 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     public static String android_id;
     static String name, day1;
     Home home;
-    MapsFragment mapsFragment;
+    boolean onMap = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainpage);
         home = new Home();
-        mapsFragment = new MapsFragment();
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navi);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 home).commit();
@@ -62,7 +62,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     /**
      * use to swap between each fragment.
      */
-    MenuItem prevItem;
+    MapsFragment mapsFragment;
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -73,20 +73,28 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
                         case R.id.nav_home:
                             home.ClearData();
                             selectedFragment = home;
+                            onMap = false;
                             break;
                         case R.id.nav_map:
-                            selectedFragment = mapsFragment;
+                            if (onMap) {
+                                return true;
+                            }
+                            selectedFragment = new MapsFragment();
                             home.ClearData();
+                            onMap = true;
                             break;
                         case R.id.nav_info:
                             selectedFragment = new info();
                             home.ClearData();
+                            onMap = false;
                             break;
                         case R.id.nav_time:
                             selectedFragment = new search();
                             home.ClearData();
+                            onMap = false;
                             break;
                     }
+
 
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();
