@@ -156,16 +156,20 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
 
                     switch (item.getItemId()){
                         case R.id.nav_home:
+                            home.ClearData();
                             selectedFragment = home;
                             break;
                         case R.id.nav_map:
                             selectedFragment = new MapsFragment();
+                            home.ClearData();
                             break;
                         case R.id.nav_info:
                             selectedFragment = new info();
+                            home.ClearData();
                             break;
                         case R.id.nav_time:
                             selectedFragment = new search();
+                            home.ClearData();
                             break;
                     }
 

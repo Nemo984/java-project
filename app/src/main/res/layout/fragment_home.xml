@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
@@ -35,11 +36,10 @@
                             android:id="@+id/seach_province"
                             android:layout_width="233dp"
                             android:layout_height="match_parent"
-                            android:hint="เลือกจังหวัด"
                             android:completionThreshold="1"
+                            android:hint="เลือกจังหวัด"
                             android:singleLine="true"
-                            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck">
-                        </AutoCompleteTextView>
+                            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck"></AutoCompleteTextView>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -383,7 +383,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="500dp"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/ic_rectangle_11__1_"
                         android:orientation="vertical">
 
@@ -405,51 +405,42 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="6dp"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-                            <ImageView
-                                android:id="@+id/image_news_1"
-                                android:layout_width="160dp"
-                                android:layout_height="128dp"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginEnd="10dp"
-                                android:layout_weight="1"
-                                tools:src="@drawable/ic_rectangle_10" />
-
-                            <TextView
-                                android:id="@+id/News_1"
-                                android:layout_width="211dp"
-                                android:layout_height="127dp"
-                                android:layout_marginEnd="20dp"
-                                android:layout_weight="1"
-                                android:text='"ดร.อนันต์ เปิดข้อมูลการฉีดวัคซีนโควิด-19 เข็มกระตุ้นเกินความจำเป็น อาจจะเกิดผลเสียมากกว่าผลดี' />
+                            <ListView
+                                android:id="@+id/list_news"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="50dp"></ListView>
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="50dp"
+                            android:orientation="vertical">
 
-                            <ImageView
+                            <com.android.volley.toolbox.NetworkImageView
                                 android:id="@+id/image_news_2"
                                 android:layout_width="167dp"
                                 android:layout_height="128dp"
+                                android:layout_gravity="center"
                                 android:layout_marginStart="20dp"
                                 android:layout_marginEnd="10dp"
-                                android:layout_weight="1"
-                                tools:src="@drawable/ic_rectangle_10" />
+                                android:layout_weight="1" />
 
                             <TextView
                                 android:id="@+id/News_2"
                                 android:layout_width="215dp"
-                                android:layout_height="127dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
                                 android:layout_weight="1"
-                                android:text="ภาพรวมโควิดทั่วประเทศลดลง แต่สูงกว่าค่าเฉลี่ย 7 วัน เสียชีวิตเหลือ 73 ราย พบ 32 จังหวัดติดเกินร้อย กทม.ยังหลักพัน ส่วนยอดฉีดวัคซีนทะลุ 1 ล้านโดส" />
+                                android:text="" />
+
                         </LinearLayout>
 
                     </LinearLayout>
