@@ -191,8 +191,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
         dateText = (TextView) myDialog.findViewById(R.id.dateTextTest);
-        String date=day+"/"+month+"/"+year;
-        day1 =day+"/"+month+"/"+year;
+        String date= year + "-" + month + "-" + day;
         dateText.setText(date);
     }
 

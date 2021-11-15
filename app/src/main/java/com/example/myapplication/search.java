@@ -1,47 +1,27 @@
 package com.example.myapplication;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.api.timelines.TimelineApiProvider;
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class search extends Fragment  {
     public static ArrayList<Timeline> histroy= new ArrayList<>();
     public static Timelineadapter adapter;
-    boolean isloadted = false;
 
     @Nullable
     @Override
@@ -72,11 +52,17 @@ public class search extends Fragment  {
 
 
     public static void createTimeline(String name, String Date, Double lat, Double Long, Context context){
+        Log.i("postData", Mainpage.android_id);
+        Log.i("postData", name);
+        Log.i("postData", Date);
+        Log.i("postData", String.valueOf(lat));
+        Log.i("postData", String.valueOf(Long));
+
         Timeline one = new Timeline(name,Date);
         histroy.add(one);
         adapter.notifyDataSetChanged();
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(context);
-        timelineApiProvider.createTimeline(Mainpage.android_id, Date, name, lat, Long, response -> {
+        timelineApiProvider.createTimeline(Mainpage.android_id,Date, name, lat, Long, response -> {
             try {
                 //stored the id
                 String id = response.getString("id");

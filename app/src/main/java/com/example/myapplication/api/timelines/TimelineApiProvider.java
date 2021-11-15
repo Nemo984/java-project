@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -17,6 +18,9 @@ import com.example.myapplication.cluster.MyItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TimelineApiProvider {
     String backend_url;
@@ -64,7 +68,14 @@ public class TimelineApiProvider {
         }
 
         StringBuilder postURL = new StringBuilder(backend_url).append(path);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, new String(postURL), postData, callback,errorCallback);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, new String(postURL), postData, callback,errorCallback) {
+            @Override
+            public String getBodyContentType()
+            {
+                return "application/json";
+            }
+        };
+
         Volley.newRequestQueue(context).add(jsonObjectRequest);
     }
 
