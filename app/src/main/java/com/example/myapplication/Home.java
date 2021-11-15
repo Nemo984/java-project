@@ -150,15 +150,24 @@ public class Home extends Fragment {
                 public void onResponse(JSONObject response) {
                     try {
                         arrayListnews = new ArrayList<News>(response.getInt("totalResults"));
+                        JSONArray articles = (JSONArray) response.get("articles");
+
                         for (int i = 0; i < response.getInt("totalResults"); i++) {
-                            String title = String.valueOf(((JSONArray) response.get("articles")).getJSONObject(i).get("title"));
-                            String urlimage = String.valueOf(((JSONArray) response.get("articles")).getJSONObject(i).get("urlToImage"));
-                            String urlnews = String.valueOf(((JSONArray) response.get("articles")).getJSONObject(i).get("url"));
+                            String title = String.valueOf(articles.getJSONObject(i).get("title"));
+                            String urlimage = String.valueOf(articles.getJSONObject(i).get("urlToImage"));
+                            String urlnews = String.valueOf(articles.getJSONObject(i).get("url"));
                             arrayListnews.add(new News(title, urlimage, urlnews));
                         }
 
                         adapter_news = new NewsListAdapter(context, R.layout.news_layout, arrayListnews);
                         listview.setAdapter(adapter_news);
+                        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(arrayListnews.get(position).getUrlnews()));
+                                startActivity(browserIntent);
+                            }
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -240,14 +249,17 @@ public class Home extends Fragment {
                 return false;
             }
         });
+
+
     }
 
     // set Province Data by String province
     public void setProvinceData(String province){
-        new_infected_p.setText("+ " + new DecimalFormat("###,###,###").format((data_provice.get(province)).get(0)).toString());
-        total_infected_province.setText(new DecimalFormat("###,###,###").format((data_provice.get(province)).get(2)).toString());
-        new_death_province.setText("+ " + new DecimalFormat("###,###,###").format((data_provice.get(province)).get(1)).toString());
-        total_death_province.setText(new DecimalFormat("###,###,###").format((data_provice.get(province)).get(3)).toString());
+        ArrayList<Integer> array_data_province = data_provice.get(province);
+        new_infected_p.setText("+ " + new DecimalFormat("###,###,###").format((array_data_province).get(0)).toString());
+        total_infected_province.setText(new DecimalFormat("###,###,###").format(array_data_province.get(2)).toString());
+        new_death_province.setText("+ " + new DecimalFormat("###,###,###").format(array_data_province.get(1)).toString());
+        total_death_province.setText(new DecimalFormat("###,###,###").format(array_data_province.get(3)).toString());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
