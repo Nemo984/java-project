@@ -32,6 +32,25 @@ public class TimelineApiProvider {
         backend_url = context.getResources().getString(R.string.backend_url);
     }
 
+    public void getTimelinesInRadius(double latitude, double longitude, double radius, int pastDays,Response.Listener<JSONArray> callback, Response.ErrorListener errorCallback) {
+        StringBuilder getURL = new StringBuilder(backend_url).append(path)
+                .append("/?lat=").append(latitude)
+                .append("&lon=").append(longitude)
+                .append("&radius=").append(radius);
+        if (pastDays != -1) {
+            getURL.append("&past-days=").append(pastDays);
+        }
+        Log.i("search", new String(getURL));
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, new String(getURL), null, callback, errorCallback);
+        Volley.newRequestQueue(context).add(jsonArrayRequest);
+    }
+
+    public void getTimelines(Response.Listener<JSONArray> callback, Response.ErrorListener errorCallback) {
+        StringBuilder getURL = new StringBuilder(backend_url).append(path);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, new String(getURL), null, callback, errorCallback);
+        Volley.newRequestQueue(context).add(jsonArrayRequest);
+    }
+
     /**
      * Get timelines by android id
      * @param user_id android id

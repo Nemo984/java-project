@@ -41,6 +41,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
@@ -50,6 +52,7 @@ import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.collections.MarkerManager;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -101,42 +104,12 @@ public class MapsFragment extends Fragment {
             googleMap.setPadding(0, 0, 0, 0);
 
             markerManager = new MarkerManager(googleMap);
-            provinceMarkers = markerManager.newCollection();
-            provinceMarkers.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                @Override
-                public View getInfoWindow(@NonNull Marker arg0) {
-                    return null;
-                }
 
-                @Override
-                public View getInfoContents(@NonNull Marker marker) {
-                    Context mContext = getContext();
-                    LinearLayout info = new LinearLayout(mContext);
-                    info.setOrientation(LinearLayout.VERTICAL);
 
-                    TextView title = new TextView(mContext);
-                    title.setTextColor(Color.BLACK);
-                    title.setGravity(Gravity.CENTER);
-                    title.setTypeface(null, Typeface.BOLD);
-                    title.setText(marker.getTitle());
 
-                    TextView snippet = new TextView(mContext);
-                    snippet.setTextColor(Color.GRAY);
-                    snippet.setText(marker.getSnippet());
+            //Timelines Heat Map
+            addHeatMap(googleMap);
 
-                    info.addView(title);
-                    info.addView(snippet);
-
-                    return info;
-                }
-            });
-
-            //Map each province
-            try {
-                mapProvinces(googleMap);
-            } catch (JSONException | IOException | XmlPullParserException e) {
-                e.printStackTrace();
-            }
 
             resetCameraBtn.setOnClickListener(view1 -> {
                 googleMap.setPadding(0, 150, 0, 0);
@@ -170,13 +143,13 @@ public class MapsFragment extends Fragment {
             //On item selected listener for spinner
             typeDropdown.setOnItemClickListener((adapterView, view, i, l) -> {
                 String choice = adapterView.getItemAtPosition(i).toString();
-                if (choice.equals("Timelines")) {
+                if (choice.equals("Search")) {
                     onType = "Timelines";
-                    provinceMarkers.hideAll();
+//                    provinceMarkers.hideAll();
                     sliderLayout.setVisibility(View.VISIBLE);
+                    dateLayout.setVisibility(View.VISIBLE);
                     mapTimelines(googleMap);
                     searchButton.setVisibility(View.VISIBLE);
-                    dateLayout.setVisibility(View.VISIBLE);
                     // TODO: put this in a func. call together with timelines setup
                     radiusSlider.addOnChangeListener((slider, value, fromUser) -> {
                         if (prevMarker != null && prevCircle == null) {
@@ -205,7 +178,7 @@ public class MapsFragment extends Fragment {
 
                 } else {
                     onType = "Cases";
-                    provinceMarkers.showAll();
+//                    provinceMarkers.showAll();
                     timelinesMarkers.clear();
                     if (prevMarker != null) {
                         prevMarker.remove();
@@ -217,8 +190,8 @@ public class MapsFragment extends Fragment {
                     clusterManager.clearItems();
                     googleMap.setOnMapClickListener(null);
                     searchButton.setVisibility(View.GONE);
-                    sliderLayout.setVisibility(View.INVISIBLE);
                     dateLayout.setVisibility(View.INVISIBLE);
+                    sliderLayout.setVisibility(View.INVISIBLE);
                 }
             });
 
@@ -229,44 +202,71 @@ public class MapsFragment extends Fragment {
                 if (prevMarker != null && prevCircle != null && prevCircle.getRadius() > 0) {
                     // Point the map's listeners at the listeners implemented by the cluster
                     // manager.
+                    clusterManager.clearItems();
                     googleMap.setOnCameraIdleListener(clusterManager);
                     googleMap.setOnMarkerClickListener(clusterManager);
-
-
                     double latitude = prevMarker.getPosition().latitude;
                     double longitude = prevMarker.getPosition().longitude;
                     double radius = prevCircle.getRadius() / DEFAULT_UNIT;
-                    StringBuilder endpoint = new StringBuilder(BACKEND_URL).append("/api/timelines/?lat=").append(latitude)
-                            .append("&lon=").append(longitude)
-                            .append("&radius=").append(radius);
-                    String URL = new String(endpoint);
-                    Log.i("search", new String(endpoint));
-
-                    JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            for (int n = 0; n < response.length(); n++) {
-                                try {
-                                    JSONObject Object = response.getJSONObject(n);
-                                    String address = Object.getString("address");
-                                    String date = Object.getString("date");
-                                    double latitude = Object.getDouble("latitude");
-                                    double longitude = Object.getDouble("longitude");
-                                    clusterManager.addItem(new MyItem(latitude, longitude, address, date));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                    int days = -1;
+                    String pastDays = dateDropdown.getText().toString();
+                    if (pastDays.equals("Today")) {
+                        days = 1;
+                    } else if (pastDays.equals("Last 7 days")) {
+                        days = 7;
+                    } else if (pastDays.equals("Last 30 days")) {
+                        days = 30;
+                    }
+                    TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
+                     timelineApiProvider.getTimelinesInRadius(latitude,longitude,radius, days, response -> {
+                        for (int n = 0; n < response.length(); n++) {
+                            try {
+                                JSONObject Object = response.getJSONObject(n);
+                                String address = Object.getString("address");
+                                String date = Object.getString("date");
+                                double latitude1 = Object.getDouble("latitude");
+                                double longitude1 = Object.getDouble("longitude");
+                                clusterManager.addItem(new MyItem(latitude1, longitude1, address, date));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            clusterManager.cluster();
                         }
-
+                        clusterManager.cluster();
                     }, error -> Log.e("Timelines", error.toString()));
-                    Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
 
                 }
             });
         }
     };
+
+    private void addHeatMap(GoogleMap googleMap) {
+        List<LatLng> latLngs = new ArrayList<>();
+
+        TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
+        timelineApiProvider.getTimelines(response -> {
+            for (int i = 0; i < response.length(); i++) {
+                try {
+                    JSONObject Object = response.getJSONObject(i);
+                    Double lat = Object.getDouble("latitude");
+                    Double lon = Object.getDouble("longitude");
+                    latLngs.add(new LatLng(lat,lon));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            // Create a heat map tile provider, passing it the latlngs of the police stations.
+            HeatmapTileProvider provider = new HeatmapTileProvider.Builder()
+                    .data(latLngs)
+                    .build();
+
+
+            // Add a tile overlay to the map, using the heat map tile provider.
+            TileOverlay overlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
+        }, error -> {
+            Log.e("heatmap", error.toString());
+        });
+    }
+
     ClusterManager<MyItem> clusterManager = null;
     MarkerManager markerManager = null;
 
@@ -286,65 +286,7 @@ public class MapsFragment extends Fragment {
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
-    List<Marker> provincesMarkers = new ArrayList<>();
     List<Marker> timelinesMarkers = new ArrayList<>();
-
-    private void mapProvinces(GoogleMap googleMap) throws JSONException, IOException, XmlPullParserException {
-
-        HashMap<String, Double[]> provinceLocationMap = ProvinceLocationHashMap.getMap();
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES_PROVINCES, null, response -> {
-            for (int n = 0; n < response.length(); n++) {
-                try {
-                    JSONObject Object = response.getJSONObject(n);
-                    String province = Object.getString("province");
-                    if (province.equals("ไม่ระบุ")) {
-                        continue;
-                    }
-                    Double[] coordinates = provinceLocationMap.get(province);
-                    LatLng provincePos = new LatLng(coordinates[0], coordinates[1]);
-
-                    int new_case = Object.getInt("new_case");
-                    int new_death = Object.getInt("new_death");
-                    int total_case = Object.getInt("total_case");
-                    int total_death = Object.getInt("total_death");
-                    String update_date = Object.getString("update_date");
-
-
-                    StringBuilder covidInfo = new StringBuilder(100);
-                    covidInfo.append("New cases: ").append(new_case)
-                            .append("\nNew deaths: ").append(new_death)
-                            .append("\nTotal cases: ").append(total_case)
-                            .append("\nTotal deaths: ").append(total_death);
-
-
-                    BitmapDescriptor markerHue;
-                    if (total_case > 100000) {
-                        markerHue = getMarkerIcon("#b20000");
-                    } else if (total_case > 50000) {
-                        markerHue = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-                    } else if (total_case > 30000) {
-                        markerHue = getMarkerIcon("#FF5733");
-                    } else if (total_case > 10000) {
-                        markerHue = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
-                    } else if (total_case > 5000) {
-                        markerHue = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
-                    } else {
-                        markerHue = getMarkerIcon("#ff2299");
-                    }
-
-                    provinceMarkers.addMarker(new MarkerOptions().icon(markerHue)
-                            .position(provincePos)
-                            .title(province)
-                            .snippet(new String(covidInfo)));
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, error -> Log.e("Timelines", error.toString()));
-        Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
-
-    }
 
     Marker prevMarker;
     Circle prevCircle;
@@ -376,7 +318,6 @@ public class MapsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
-    MarkerManager.Collection provinceMarkers;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

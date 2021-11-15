@@ -118,7 +118,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:inputType="none"
-            android:text="Cases" />
+            android:text="Heatmap" />
     </com.google.android.material.textfield.TextInputLayout>
 
 </RelativeLayout>

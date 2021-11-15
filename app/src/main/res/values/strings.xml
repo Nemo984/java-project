@@ -4,8 +4,8 @@
     <string name = "backend_url">https://simple-covid-backend.herokuapp.com</string>
 
     <string-array name="map_types">
-        <item>Cases</item>
-        <item>Timelines</item>
+        <item>Heatmap</item>
+        <item>Search</item>
     </string-array>
     <string-array name="date_types">
         <item>Today</item>
