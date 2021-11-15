@@ -20,11 +20,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 
@@ -56,17 +51,28 @@ public class search extends Fragment  {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 item = adapterView.getItemAtPosition(i).toString()+"has been deleted";
+
+                if(i==0){
+                    String Id = TimelineId.get((Timeline) adapterView.getItemAtPosition(i));
+                    Log.i("deleteid",Id );
+                    delete_timeline(TimelineId.get((Timeline) adapterView.getItemAtPosition(i)));
+                    adapter.notifyDataSetChanged();
+                }
+                else{
+                    String Id = TimelineId.get((Timeline) adapterView.getItemAtPosition(i-1));
+                    Log.i("deleteid",Id );
+                    delete_timeline(TimelineId.get((Timeline) adapterView.getItemAtPosition(i-1)));
+                    adapter.notifyDataSetChanged();
+                }
                 histroy.remove(i);
-                String Id = TimelineId.get((Timeline) adapterView.getItemAtPosition(i-1));
-                Log.i("deleteid",Id );
-                delete_timeline(TimelineId.get((Timeline) adapterView.getItemAtPosition(i-1)));
-                adapter.notifyDataSetChanged();
                 return true;
             }
         });
     }
 
-
+    /**
+     * Delete Timeline
+     */
     public void delete_timeline(String id){
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
         timelineApiProvider.deleteTimelineById(id, response -> {
@@ -76,7 +82,9 @@ public class search extends Fragment  {
             Log.e("deleteTimeline", error.toString());
         });
     }
-
+    /**
+     * Create Timeline
+     */
     public static void createTimeline(String name, String Date, Double lat, Double Long, Context context){
         Log.i("postData", Mainpage.android_id);
         Log.i("postData", name);
@@ -91,7 +99,9 @@ public class search extends Fragment  {
 
         timelineApiProvider.createTimeline(Mainpage.android_id, Mainpage.day1, name, lat, Long, response -> {
             try {
-                //stored the id
+                /**
+                 * stored the id
+                 */
                 String id = response.getString("id");
                 Log.i("jsonresponse", id);
                 String user_id = response.getString("uid");
@@ -110,7 +120,9 @@ public class search extends Fragment  {
             }
         }, error -> Log.e("postTimeline", error.toString()));
     }
-
+    /**
+     * Load Timeline from backend
+     */
     public void load_timeline(Context context){
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(context);
         timelineApiProvider.getTimelinesByUserId(Mainpage.android_id, response -> {
