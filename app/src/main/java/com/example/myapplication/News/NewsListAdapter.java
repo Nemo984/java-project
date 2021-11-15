@@ -12,16 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.volley.toolbox.NetworkImageView;
-import com.example.myapplication.ConnectionManager;
 import com.example.myapplication.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class NewsListAdapter extends ArrayAdapter<News> {
 
