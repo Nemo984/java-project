@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -18,24 +19,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-<<<<<<< Updated upstream
-=======
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
->>>>>>> Stashed changes
+
 
 public class search extends Fragment  {
     public static ArrayList<Timeline> histroy= new ArrayList<>();
     public HashMap<Timeline,String> TimelineId = new HashMap<>();
     public static Timelineadapter adapter;
-<<<<<<< Updated upstream
-=======
     String item;
->>>>>>> Stashed changes
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,11 +81,8 @@ public class search extends Fragment  {
         histroy.add(one);
         adapter.notifyDataSetChanged();
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(context);
-<<<<<<< Updated upstream
-        timelineApiProvider.createTimeline(Mainpage.android_id,Date, name, lat, Long, response -> {
-=======
+
         timelineApiProvider.createTimeline(Mainpage.android_id, Mainpage.day1, name, lat, Long, response -> {
->>>>>>> Stashed changes
             try {
                 //stored the id
                 String id = response.getString("id");

@@ -1,47 +1,36 @@
 package com.example.myapplication;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.Settings.Secure;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.app.DatePickerDialog;
-import android.app.FragmentManager;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.app.Dialog;
-import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.provider.Settings.Secure;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.example.myapplication.api.timelines.TimelineApiProvider;
 import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.w3c.dom.Text;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
 
 public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -190,12 +179,8 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
         dateText = (TextView) myDialog.findViewById(R.id.dateTextTest);
-<<<<<<< Updated upstream
-        String date= year + "-" + month + "-" + day;
-=======
         String date=day+"/"+month+"/"+year;
         day1 =year+"-"+month+"-"+day;
->>>>>>> Stashed changes
         dateText.setText(date);
     }
 
