@@ -18,10 +18,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+<<<<<<< Updated upstream
+=======
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+>>>>>>> Stashed changes
 
 public class search extends Fragment  {
     public static ArrayList<Timeline> histroy= new ArrayList<>();
+    public HashMap<Timeline,String> TimelineId = new HashMap<>();
     public static Timelineadapter adapter;
+<<<<<<< Updated upstream
+=======
+    String item;
+>>>>>>> Stashed changes
 
     @Nullable
     @Override
@@ -41,15 +54,30 @@ public class search extends Fragment  {
         if(histroy.isEmpty()){
             load_timeline(getContext());
         }
-
-        /*if(!isloadted){
-            load_timeline(getContext());
-            isloadted = true;
-        }*/
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                item = adapterView.getItemAtPosition(i).toString()+"has been deleted";
+                histroy.remove(i);
+                String Id = TimelineId.get((Timeline) adapterView.getItemAtPosition(i-1));
+                Log.i("deleteid",Id );
+                delete_timeline(TimelineId.get((Timeline) adapterView.getItemAtPosition(i-1)));
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+        });
     }
 
 
-
+    public void delete_timeline(String id){
+        TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
+        timelineApiProvider.deleteTimelineById("c015b498-6ea4-43e8-93a3-bf662787868c", response -> {
+            //Deleted OK, do something here...
+            Log.i("deleteTimeline","This is deleted");
+        }, error -> {
+            Log.e("deleteTimeline", error.toString());
+        });
+    }
 
     public static void createTimeline(String name, String Date, Double lat, Double Long, Context context){
         Log.i("postData", Mainpage.android_id);
@@ -62,7 +90,11 @@ public class search extends Fragment  {
         histroy.add(one);
         adapter.notifyDataSetChanged();
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(context);
+<<<<<<< Updated upstream
         timelineApiProvider.createTimeline(Mainpage.android_id,Date, name, lat, Long, response -> {
+=======
+        timelineApiProvider.createTimeline(Mainpage.android_id, Mainpage.day1, name, lat, Long, response -> {
+>>>>>>> Stashed changes
             try {
                 //stored the id
                 String id = response.getString("id");
@@ -98,6 +130,7 @@ public class search extends Fragment  {
                     Log.i("getArray", date);
                     Timeline one = new Timeline(address,date);
                     histroy.add(one);
+                    TimelineId.put(one,id);
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();

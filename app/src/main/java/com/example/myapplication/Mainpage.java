@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.app.Dialog;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -52,7 +51,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     double lat,Long;
     private TextView dateText;
     public static String android_id;
-    String name, day1;
+    static String name, day1;
     Home home;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,7 +190,12 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
         dateText = (TextView) myDialog.findViewById(R.id.dateTextTest);
+<<<<<<< Updated upstream
         String date= year + "-" + month + "-" + day;
+=======
+        String date=day+"/"+month+"/"+year;
+        day1 =year+"-"+month+"-"+day;
+>>>>>>> Stashed changes
         dateText.setText(date);
     }
 
