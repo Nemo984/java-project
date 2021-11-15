@@ -64,7 +64,7 @@ public class MapsFragment extends Fragment {
 
     public String BACKEND_URL;
     final int DEFAULT_UNIT = 1000; // in meters = 1 km
-    String onType = "Cases";
+    String onType = "Heatmap";
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -92,6 +92,9 @@ public class MapsFragment extends Fragment {
 
             //Timelines Heat Map
             addHeatMap(googleMap);
+
+            //Set components type
+            setComponentsType("Heatmap");
 
             //reset view button
             resetCameraBtn.setOnClickListener(view1 -> {
@@ -179,13 +182,29 @@ public class MapsFragment extends Fragment {
     };
 
     /**
+     *  Components visibility based on current type
+     */
+    private void setComponentsType(String type) {
+        Log.i("maptype",type);
+        if (type.equals("Heatmap")) {
+            Log.i("maptype","heatmap " + type);
+            searchButton.setVisibility(View.GONE);
+            dateLayout.setVisibility(View.INVISIBLE);
+            sliderLayout.setVisibility(View.INVISIBLE);
+        } else {
+            Log.i("maptype","search " + type);
+            sliderLayout.setVisibility(View.VISIBLE);
+            dateLayout.setVisibility(View.VISIBLE);
+            searchButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
      * Setup method for search type
      */
     private void searchTypeSetup(GoogleMap googleMap) {
         onType = "Search";
-        sliderLayout.setVisibility(View.VISIBLE);
-        dateLayout.setVisibility(View.VISIBLE);
-        searchButton.setVisibility(View.VISIBLE);
+        setComponentsType(onType);
         overlay.setVisible(false);
 
         googleMap.setOnMapClickListener(point -> {
@@ -224,6 +243,7 @@ public class MapsFragment extends Fragment {
     private void heatMapTypeSetup(GoogleMap googleMap) {
         overlay.setVisible(true);
         onType = "Heatmap";
+        setComponentsType(onType);
         clusterManager.clearItems();
         clusterManager.cluster();
         if (prevMarker != null) {
@@ -234,9 +254,7 @@ public class MapsFragment extends Fragment {
             prevCircle.remove();
         }
         googleMap.setOnMapClickListener(null);
-        searchButton.setVisibility(View.GONE);
-        dateLayout.setVisibility(View.INVISIBLE);
-        sliderLayout.setVisibility(View.INVISIBLE);
+
     }
 
     /**
@@ -366,12 +384,9 @@ public class MapsFragment extends Fragment {
         ArrayAdapter<CharSequence> dateAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.date_types, R.layout.dropdown_item);
         adapter.setDropDownViewResource(R.layout.dropdown_item);
         dateDropdown.setAdapter(dateAdapter);
-        dateLayout.setVisibility(View.INVISIBLE);
-
 
         //get slider layout
         sliderLayout = (FrameLayout) getActivity().findViewById(R.id.sliderLayout);
-        sliderLayout.setVisibility(View.GONE);
 
 
         //get radius slider
@@ -383,6 +398,7 @@ public class MapsFragment extends Fragment {
         //search btn
         searchButton = getActivity().findViewById(R.id.searchButton);
 
-        searchButton.setVisibility(View.INVISIBLE);
+        setComponentsType("Heatmap");
+
     }
 }
