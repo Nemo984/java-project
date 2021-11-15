@@ -53,7 +53,7 @@ public class Home extends Fragment {
     // Variables that used
     private HashMap<String, ArrayList<Integer>> data_provice = new HashMap<String, ArrayList<Integer>>();
     private HashMap<String, Integer> data_today = new HashMap<String, Integer>();
-    private ArrayList<String> province_list = new ArrayList<>(Arrays.asList("Select Province","กระบี่","กรุงเทพมหานคร","กาญจนบุรี"
+    private ArrayList<String> province_list = new ArrayList<>(Arrays.asList("กระบี่","กรุงเทพมหานคร","กาญจนบุรี"
             ,"กาฬสินธุ์", "กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท", "ชัยภูมิ","ชุมพร", "ตรัง", "ตราด", "ตาก", "นครนายก",
             "นครปฐม", "นครพนม", "นครราชสีมา", "นครศรีธรรมราช", "นครสวรรค์", "นนทบุรี", "นราธิวาส", "น่าน", "บึงกาฬ", "บุรีรัมย์", "ปทุมธานี",
             "ประจวบคีรีขันธ์", "ปราจีนบุรี", "ปัตตานี", "พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","ภูเก็ต","มหาสารคาม","มุกดาหาร",

@@ -26,7 +26,6 @@ public class search extends Fragment {
     public static ArrayList<Timeline> histroy = new ArrayList<>();
     public static HashMap<Timeline, String> TimelineId = new HashMap<>();
     public static Timelineadapter adapter;
-    String item;
 
     @Nullable
     @Override
@@ -46,17 +45,14 @@ public class search extends Fragment {
         if (histroy.isEmpty()) {
             load_timeline(getContext());
         }
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String Id = TimelineId.get((Timeline) histroy.get(i));
-                Log.i("deleteid", Id);
-                TimelineId.remove(histroy.get(i));
-                delete_timeline(Id);
-                adapter.notifyDataSetChanged();
-                histroy.remove(i);
-                return true;
-            }
+        listView.setOnItemLongClickListener((adapterView, view1, i, l) -> {
+            String Id = TimelineId.get((Timeline) histroy.get(i));
+            Log.i("deleteid", Id);
+            TimelineId.remove(histroy.get(i));
+            delete_timeline(Id);
+            adapter.notifyDataSetChanged();
+            histroy.remove(i);
+            return true;
         });
     }
 

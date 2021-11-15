@@ -41,8 +41,6 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.collections.MarkerManager;
-import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 import org.json.JSONException;
@@ -91,8 +89,6 @@ public class MapsFragment extends Fragment {
             googleMap.setPadding(0, 150, 0, 0);
             googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(thailandBounds, 0));
             googleMap.setPadding(0, 0, 0, 0);
-
-            markerManager = new MarkerManager(googleMap);
 
             //Timelines Heat Map
             addHeatMap(googleMap);
@@ -280,7 +276,6 @@ public class MapsFragment extends Fragment {
 
 
     ClusterManager<MyItem> clusterManager = null;
-    MarkerManager markerManager = null;
 
     /**
      * return zoom level based relative to circle radius
@@ -352,7 +347,7 @@ public class MapsFragment extends Fragment {
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.VIEWPORT));
 
-        //set location bounds -> Thailand
+        //set location bias and bounds to Thailand
         autocompleteFragment.setLocationBias(RectangularBounds.newInstance(
                 new LatLng(15, 101),
                 new LatLng(15, 101)

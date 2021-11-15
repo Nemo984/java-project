@@ -1,7 +1,5 @@
 package com.example.myapplication;
 
-import static android.os.SystemClock.sleep;
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -9,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -33,13 +30,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.Delayed;
 
 public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     Dialog myDialog;
     EditText editText;
-    TextView Lat;
     double lat, Long;
     private TextView dateText;
     public static String android_id;
@@ -107,7 +102,6 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
             Place place = Autocomplete.getPlaceFromIntent(data);
             editText.setText(place.getName());
             name = place.getName();
-            Lat.setText(String.valueOf(place.getLatLng()));
             lat = place.getLatLng().latitude;
             Long = place.getLatLng().longitude;
 
@@ -152,14 +146,16 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
         });
         Places.initialize(getApplicationContext(), "AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY");
         editText = (EditText) myDialog.findViewById(R.id.edit_text);
-        Lat = (TextView) myDialog.findViewById(R.id.LatLong);
         editText.setFocusable(false);
         editText.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 List<Place.Field> fieldsList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME);
-                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldsList).build(Mainpage.this);
+
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldsList)
+                        .setCountry("TH")
+                        .build(Mainpage.this);
                 startActivityForResult(intent, 100);
             }
         });
@@ -175,17 +171,14 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
             }
         });
         txtdone = (TextView) myDialog.findViewById(R.id.done);
-        txtdone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String Name = editText.getText().toString();
-                String Date = dateText.getText().toString();
-                Double lat1 = lat;
-                Double long1 = Long;
-                if (Name != null && Date != null) {
-                    search.createTimeline(Name, Date, lat1, long1, getApplicationContext());
-                    myDialog.dismiss();
-                }
+        txtdone.setOnClickListener(view -> {
+            String Name = editText.getText().toString();
+            String Date = dateText.getText().toString();
+            Double lat1 = lat;
+            Double long1 = Long;
+            if (!Name.equals("") && !Date.equals("")) {
+                search.createTimeline(Name, Date, lat1, long1, getApplicationContext());
+                myDialog.dismiss();
             }
         });
         myDialog.show();

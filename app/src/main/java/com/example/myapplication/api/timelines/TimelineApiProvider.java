@@ -1,26 +1,19 @@
 package com.example.myapplication.api.timelines;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.R;
-import com.example.myapplication.cluster.MyItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class TimelineApiProvider {
     String backend_url;

@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Timelineadapter extends ArrayAdapter<Timeline> {
     private Context mContext;
@@ -27,8 +26,6 @@ public class Timelineadapter extends ArrayAdapter<Timeline> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         String name = getItem(position).getName();
         String Date = getItem(position).getDate();
-
-        Timeline timeline = new Timeline(name,Date);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource,parent,false);
