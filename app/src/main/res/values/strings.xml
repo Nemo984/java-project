@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Simple Covid</string>
     <string name="google_maps_key">AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY</string>
-    <string name = "backend_url">sd</string>
+    <string name = "backend_url">https://simple-covid-backend.herokuapp.com</string>
 
     <string-array name="map_types">
         <item>Cases</item>

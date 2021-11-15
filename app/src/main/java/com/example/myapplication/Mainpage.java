@@ -43,11 +43,16 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     private TextView dateText;
     private String android_id;
     String name, day1;
-    ExpandableListView expandableListView1;
+    ExpandableListView expandableListView;
     ArrayList<String> list = new ArrayList<>();
     HashMap<String,ArrayList<String>> listC = new HashMap<>();
+<<<<<<< Updated upstream
     MainAdapter adapter ;
     Home home;
+=======
+    MainAdapter adapter;
+
+>>>>>>> Stashed changes
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +66,9 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
         View view = LayoutInflater.from(getApplication()).inflate(R.layout.fragment_search, null);
         Log.i("android_id", android_id);
 
-        expandableListView1 = view.findViewById(R.id.exp1);
-        for(int g=0; g<10;g++){
+        expandableListView = view.findViewById(R.id.exp1);
+        //use for loop
+        for(int g=0; g<=10;g++){
             list.add("Group"+g);
 
             ArrayList<String> arrayList = new ArrayList<>();
@@ -73,8 +79,8 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
             listC.put(list.get(g),arrayList);
         }
         adapter = new MainAdapter(list,listC);
-        expandableListView1.setAdapter(adapter);
-        myDialog = new Dialog(this);
+        expandableListView.setAdapter(adapter);
+        //myDialog = new Dialog(this);
 
     }
 
@@ -162,8 +168,8 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
         arrayList1.add(name);
         listC.put(list.get(0),arrayList1);
 
-        adapter = new MainAdapter(list,listC);
-        expandableListView1.setAdapter(adapter);
+//        adapter = new MainAdapter(list,listC);
+//        expandableListView1.setAdapter(adapter);
         myDialog.dismiss();
     }
 

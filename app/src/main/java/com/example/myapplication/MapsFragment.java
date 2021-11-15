@@ -74,7 +74,7 @@ public class MapsFragment extends Fragment {
     AutoCompleteTextView typeDropdown;
     TextInputLayout dateLayout;
     AutoCompleteTextView dateDropdown;
-    public final String BACKEND_URL = "https://764e-125-24-184-202.ngrok.io";
+    public String BACKEND_URL;
     final int DEFAULT_UNIT = 1000;
     String onType = "Cases";
 
@@ -386,7 +386,7 @@ public class MapsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
-//        BACKEND_URL = getActivity().getString(R.string.backend_url);
+        BACKEND_URL = getActivity().getString(R.string.backend_url);
 
         // Initialize the AutocompleteSupportFragment.
         Places.initialize(getActivity().getApplicationContext(), "AIzaSyAQDtDk9VFC_mTpq16k5PvTvSD-WHC7RLY");
@@ -435,7 +435,7 @@ public class MapsFragment extends Fragment {
         searchButton.setVisibility(View.INVISIBLE);
 
         //timeline api provider test
-        TimelineApiProvider timelineApiProvider = new TimelineApiProvider(BACKEND_URL, getContext());
+        TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
         timelineApiProvider.createTimeline("2fa3g", "2020-02-25", "Dreamworld", 131.1142, 151.412, response -> {
             try {
                 //stored the id

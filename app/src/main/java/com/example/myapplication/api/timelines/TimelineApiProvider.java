@@ -1,6 +1,7 @@
 package com.example.myapplication.api.timelines;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -10,6 +11,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.myapplication.R;
 import com.example.myapplication.cluster.MyItem;
 
 import org.json.JSONArray;
@@ -21,9 +23,9 @@ public class TimelineApiProvider {
     final String path = "/api/timelines";
     Context context;
 
-    public TimelineApiProvider(String backend_url, Context context) {
-        this.backend_url = backend_url;
+    public TimelineApiProvider(Context context) {
         this.context = context;
+        backend_url = context.getResources().getString(R.string.backend_url);
     }
 
     /**
