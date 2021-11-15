@@ -51,7 +51,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     TextView Lat;
     double lat,Long;
     private TextView dateText;
-    private String android_id;
+    public static String android_id;
     String name, day1;
     Home home;
     @Override
@@ -140,10 +140,10 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
             public void onClick(View view) {
                 String Name = editText.getText().toString();
                 String Date = dateText.getText().toString();
-                Double lat1 = 12.34;
-                Double long1 = 54.1221;
+                Double lat1 = lat;
+                Double long1 = Long;
                 if(Name != null && Date != null){
-                    search.createTimeline(Name,Date,lat1,long1);
+                    search.createTimeline(Name,Date,lat1,long1,getApplicationContext());
                     myDialog.dismiss();
                 }
 
