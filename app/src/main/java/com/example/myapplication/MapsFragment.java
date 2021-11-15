@@ -42,6 +42,7 @@ import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.collections.MarkerManager;
+import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 import org.json.JSONException;
@@ -80,7 +81,9 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            //default view
+            /**
+             * default view bounds
+             */
             LatLngBounds thailandBounds = new LatLngBounds(
                     new LatLng(5.6130380, 97.3433960),
                     new LatLng(20.4651430, 105.6368120)
@@ -126,6 +129,7 @@ public class MapsFragment extends Fragment {
                 if (choice.equals("Search")) {
                     searchTypeSetup(googleMap);
                 } else {
+                    clusterManager.clearItems();
                     heatMapTypeSetup(googleMap);
                 }
             });
@@ -139,6 +143,7 @@ public class MapsFragment extends Fragment {
                     // Point the map's listeners at the listeners implemented by the cluster
                     // manager.
                     clusterManager.clearItems();
+                    clusterManager.cluster();
                     googleMap.setOnCameraIdleListener(clusterManager);
                     googleMap.setOnMarkerClickListener(clusterManager);
                     double latitude = prevMarker.getPosition().latitude;
@@ -185,6 +190,7 @@ public class MapsFragment extends Fragment {
         sliderLayout.setVisibility(View.VISIBLE);
         dateLayout.setVisibility(View.VISIBLE);
         searchButton.setVisibility(View.VISIBLE);
+        overlay.setVisible(false);
 
         googleMap.setOnMapClickListener(point -> {
             markerRadiusSelector(googleMap, point);
@@ -220,8 +226,10 @@ public class MapsFragment extends Fragment {
      * Setup method for Heatmap
      */
     private void heatMapTypeSetup(GoogleMap googleMap) {
+        overlay.setVisible(true);
         onType = "Heatmap";
-        timelinesMarkers.clear();
+        clusterManager.clearItems();
+        clusterManager.cluster();
         if (prevMarker != null) {
             prevMarker.remove();
         }
@@ -229,7 +237,6 @@ public class MapsFragment extends Fragment {
         if (prevCircle != null) {
             prevCircle.remove();
         }
-        clusterManager.clearItems();
         googleMap.setOnMapClickListener(null);
         searchButton.setVisibility(View.GONE);
         dateLayout.setVisibility(View.INVISIBLE);
@@ -239,7 +246,8 @@ public class MapsFragment extends Fragment {
     /**
      * Method that adds heatmap with date from all existing timelines
      */
-    private void addHeatMap(GoogleMap googleMap) {
+    TileOverlay overlay;
+    public void addHeatMap(GoogleMap googleMap) {
         List<LatLng> latLngs = new ArrayList<>();
 
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
@@ -249,23 +257,27 @@ public class MapsFragment extends Fragment {
                     JSONObject Object = response.getJSONObject(i);
                     double lat = Object.getDouble("latitude");
                     double lon = Object.getDouble("longitude");
+                    Log.i("latlon", lat + " " + lon);
                     latLngs.add(new LatLng(lat,lon));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+
+
             // Create a heat map tile provider, passing it the latlngs of the police stations.
             HeatmapTileProvider provider = new HeatmapTileProvider.Builder()
                     .data(latLngs)
                     .build();
-
+            provider.setRadius(50);
 
             // Add a tile overlay to the map, using the heat map tile provider.
-            TileOverlay overlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
+            overlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
         }, error -> {
             Log.e("heatmap", error.toString());
         });
     }
+
 
     ClusterManager<MyItem> clusterManager = null;
     MarkerManager markerManager = null;
@@ -292,7 +304,6 @@ public class MapsFragment extends Fragment {
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
-    List<Marker> timelinesMarkers = new ArrayList<>();
 
     Marker prevMarker;
     Circle prevCircle;
