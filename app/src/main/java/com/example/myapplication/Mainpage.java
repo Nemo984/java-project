@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.app.DatePickerDialog;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,9 +15,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.app.Dialog;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.provider.Settings.Secure;
@@ -26,7 +31,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.example.myapplication.api.timelines.TimelineApiProvider;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -34,6 +41,9 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+
+import org.w3c.dom.Text;
+
 public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     Dialog myDialog;
@@ -43,16 +53,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     private TextView dateText;
     private String android_id;
     String name, day1;
-    ExpandableListView expandableListView;
-    ArrayList<String> list = new ArrayList<>();
-    HashMap<String,ArrayList<String>> listC = new HashMap<>();
-<<<<<<< Updated upstream
-    MainAdapter adapter ;
     Home home;
-=======
-    MainAdapter adapter;
-
->>>>>>> Stashed changes
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,24 +66,12 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
         android_id = Secure.getString(getApplicationContext().getContentResolver(),Secure.ANDROID_ID);
         View view = LayoutInflater.from(getApplication()).inflate(R.layout.fragment_search, null);
         Log.i("android_id", android_id);
+        myDialog = new Dialog(this);
 
-        expandableListView = view.findViewById(R.id.exp1);
-        //use for loop
-        for(int g=0; g<=10;g++){
-            list.add("Group"+g);
-
-            ArrayList<String> arrayList = new ArrayList<>();
-
-            for(int c=0; c<5;c++){
-                arrayList.add("item"+c);
-            }
-            listC.put(list.get(g),arrayList);
-        }
-        adapter = new MainAdapter(list,listC);
-        expandableListView.setAdapter(adapter);
-        //myDialog = new Dialog(this);
 
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -90,7 +79,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
         if(requestCode==100 && resultCode==RESULT_OK){
             Place place=Autocomplete.getPlaceFromIntent(data);
             editText.setText(place.getName());
-            name = editText.getText().toString();
+            name = place.getName();
             Lat.setText(String.valueOf(place.getLatLng()));
             lat = place.getLatLng().latitude;
             Long = place.getLatLng().longitude;
@@ -116,7 +105,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
 
     public void ShowPopup(View v){
         TextView txtclose;
-        //TextView txtdone;
+        TextView txtdone;
         myDialog.setContentView(R.layout.pop_menu);
         txtclose =(TextView) myDialog.findViewById(R.id.textView3);
         txtclose.setOnClickListener(new View.OnClickListener() {
@@ -145,33 +134,28 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
                 showDate();
             }
         });
+        txtdone = (TextView) myDialog.findViewById(R.id.done);
+        txtdone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String Name = editText.getText().toString();
+                String Date = dateText.getText().toString();
+                Double lat1 = 12.34;
+                Double long1 = 54.1221;
+                if(Name != null && Date != null){
+                    search.createTimeline(Name,Date,lat1,long1);
+                    myDialog.dismiss();
+                }
+
+
+            }
+        });
 
         myDialog.show();
 
-        //txtdone = (TextView) myDialog.findViewById(R.id.done);
-        /*txtdone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                list.add("day:"+dateText.getText().toString());
-                ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.add(editText.getText().toString());
-                listC.put(list.get(0),arrayList);
-                myDialog.dismiss();
-            }
-        });*/
 
     }
 
-    public void saveData(View v){
-        list.add("day:"+day1);
-        ArrayList<String> arrayList1 = new ArrayList<>();
-        arrayList1.add(name);
-        listC.put(list.get(0),arrayList1);
-
-//        adapter = new MainAdapter(list,listC);
-//        expandableListView1.setAdapter(adapter);
-        myDialog.dismiss();
-    }
 
 
 
