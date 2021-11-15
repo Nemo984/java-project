@@ -22,17 +22,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-
-public class search extends Fragment  {
-    public static ArrayList<Timeline> histroy= new ArrayList<>();
-    public HashMap<Timeline,String> TimelineId = new HashMap<>();
+public class search extends Fragment {
+    public static ArrayList<Timeline> histroy = new ArrayList<>();
+    public static HashMap<Timeline, String> TimelineId = new HashMap<>();
     public static Timelineadapter adapter;
     String item;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search, container,false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
         return view;
     }
 
@@ -42,28 +41,19 @@ public class search extends Fragment  {
         super.onViewCreated(view, savedInstanceState);
         ListView listView = (ListView) view.findViewById(R.id.view1);
         adapter = new Timelineadapter(getActivity(),
-                R.layout.adapter_view,histroy);
+                R.layout.adapter_view, histroy);
         listView.setAdapter(adapter);
-        if(histroy.isEmpty()){
+        if (histroy.isEmpty()) {
             load_timeline(getContext());
         }
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                item = adapterView.getItemAtPosition(i).toString()+"has been deleted";
-
-                if(i==0){
-                    String Id = TimelineId.get((Timeline) adapterView.getItemAtPosition(i));
-                    Log.i("deleteid",Id );
-                    delete_timeline(TimelineId.get((Timeline) adapterView.getItemAtPosition(i)));
-                    adapter.notifyDataSetChanged();
-                }
-                else{
-                    String Id = TimelineId.get((Timeline) adapterView.getItemAtPosition(i-1));
-                    Log.i("deleteid",Id );
-                    delete_timeline(TimelineId.get((Timeline) adapterView.getItemAtPosition(i-1)));
-                    adapter.notifyDataSetChanged();
-                }
+                String Id = TimelineId.get((Timeline) histroy.get(i));
+                Log.i("deleteid", Id);
+                TimelineId.remove(histroy.get(i));
+                delete_timeline(Id);
+                adapter.notifyDataSetChanged();
                 histroy.remove(i);
                 return true;
             }
@@ -73,26 +63,28 @@ public class search extends Fragment  {
     /**
      * Delete Timeline
      */
-    public void delete_timeline(String id){
+    public void delete_timeline(String id) {
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
+        Log.i("id", id);
         timelineApiProvider.deleteTimelineById(id, response -> {
             //Deleted OK, do something here...
-            Log.i("deleteTimeline","This is deleted");
+            Log.i("deleteTimeline", "This is deleted");
         }, error -> {
             Log.e("deleteTimeline", error.toString());
         });
     }
+
     /**
      * Create Timeline
      */
-    public static void createTimeline(String name, String Date, Double lat, Double Long, Context context){
+    public static void createTimeline(String name, String Date, Double lat, Double Long, Context context) {
         Log.i("postData", Mainpage.android_id);
         Log.i("postData", name);
         Log.i("postData", Date);
         Log.i("postData", String.valueOf(lat));
         Log.i("postData", String.valueOf(Long));
 
-        Timeline one = new Timeline(name,Date);
+        Timeline one = new Timeline(name, Date);
         histroy.add(one);
         adapter.notifyDataSetChanged();
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(context);
@@ -114,16 +106,18 @@ public class search extends Fragment  {
                 Log.i("jsonresponse", String.valueOf(latitude));
                 double longitude = response.getDouble("longitude");
                 Log.i("jsonresponse", String.valueOf(longitude));
+                TimelineId.put(one, id);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }, error -> Log.e("postTimeline", error.toString()));
     }
+
     /**
      * Load Timeline from backend
      */
-    public void load_timeline(Context context){
+    public void load_timeline(Context context) {
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(context);
         timelineApiProvider.getTimelinesByUserId(Mainpage.android_id, response -> {
             for (int i = 0; i < response.length(); i++) {
@@ -135,9 +129,9 @@ public class search extends Fragment  {
                     Log.i("getArray", address);
                     String date = Object.getString("date");
                     Log.i("getArray", date);
-                    Timeline one = new Timeline(address,date);
+                    Timeline one = new Timeline(address, date);
                     histroy.add(one);
-                    TimelineId.put(one,id);
+                    TimelineId.put(one, id);
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
