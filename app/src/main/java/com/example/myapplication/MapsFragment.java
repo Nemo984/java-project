@@ -62,8 +62,9 @@ public class MapsFragment extends Fragment {
     AutoCompleteTextView typeDropdown;
     TextInputLayout dateLayout;
     AutoCompleteTextView dateDropdown;
+
     public String BACKEND_URL;
-    final int DEFAULT_UNIT = 1000;
+    final int DEFAULT_UNIT = 1000; // in meters = 1 km
     String onType = "Cases";
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -79,7 +80,7 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            //default location
+            //default view
             LatLngBounds thailandBounds = new LatLngBounds(
                     new LatLng(5.6130380, 97.3433960),
                     new LatLng(20.4651430, 105.6368120)
@@ -90,93 +91,42 @@ public class MapsFragment extends Fragment {
 
             markerManager = new MarkerManager(googleMap);
 
-
-
             //Timelines Heat Map
             addHeatMap(googleMap);
 
-
+            //reset view button
             resetCameraBtn.setOnClickListener(view1 -> {
                 googleMap.setPadding(0, 150, 0, 0);
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(thailandBounds, 0));
                 googleMap.setPadding(0, 0, 0, 0);
             });
 
-            // Set up a PlaceSelectionListener to handle the response -- see this real!!!.
+            // Set up a PlaceSelectionListener to handle the response
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 private static final String TAG = "auto-complete fragment";
 
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
-                    // TODO: Get info about the selected place.
                     Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getLatLng());
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(place.getViewport(), 100));
-                    if (onType.equals("Timelines")) {
+                    if (onType.equals("Search")) {
                         markerRadiusSelector(googleMap, place.getLatLng());
                     }
                 }
 
-
                 @Override
                 public void onError(@NonNull Status status) {
-                    // TODO: Handle the error.
                     Log.i(TAG, "An error occurred: " + status);
                 }
             });
 
-            //TODO: put timelines / cases into their own setup func.
-            //On item selected listener for spinner
+            //On item selected listener for Type Dropdown
             typeDropdown.setOnItemClickListener((adapterView, view, i, l) -> {
                 String choice = adapterView.getItemAtPosition(i).toString();
                 if (choice.equals("Search")) {
-                    onType = "Timelines";
-//                    provinceMarkers.hideAll();
-                    sliderLayout.setVisibility(View.VISIBLE);
-                    dateLayout.setVisibility(View.VISIBLE);
-                    mapTimelines(googleMap);
-                    searchButton.setVisibility(View.VISIBLE);
-                    // TODO: put this in a func. call together with timelines setup
-                    radiusSlider.addOnChangeListener((slider, value, fromUser) -> {
-                        if (prevMarker != null && prevCircle == null) {
-                            CircleOptions circleOptions = new CircleOptions()
-                                    .center(new LatLng(prevMarker.getPosition().latitude, prevMarker.getPosition().longitude))
-                                    .radius(DEFAULT_UNIT * value) // In meters
-                                    .fillColor(0x33FF0000)
-                                    .strokeColor(Color.RED)
-                                    .strokeWidth(0);
-
-                            prevCircle = googleMap.addCircle(circleOptions);
-                            if (value != 0) {
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                        circleOptions.getCenter(), getZoomLevel(prevCircle)));
-                            }
-
-                        } else if (prevMarker != null) {
-                            prevCircle.setRadius(DEFAULT_UNIT * value);
-                            if (value != 0) {
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                        prevCircle.getCenter(), getZoomLevel(prevCircle)));
-                            }
-
-                        }
-                    });
-
+                    searchTypeSetup(googleMap);
                 } else {
-                    onType = "Cases";
-//                    provinceMarkers.showAll();
-                    timelinesMarkers.clear();
-                    if (prevMarker != null) {
-                        prevMarker.remove();
-                    }
-                    radiusSlider.setValue(0);
-                    if (prevCircle != null) {
-                        prevCircle.remove();
-                    }
-                    clusterManager.clearItems();
-                    googleMap.setOnMapClickListener(null);
-                    searchButton.setVisibility(View.GONE);
-                    dateLayout.setVisibility(View.INVISIBLE);
-                    sliderLayout.setVisibility(View.INVISIBLE);
+                    heatMapTypeSetup(googleMap);
                 }
             });
 
@@ -195,6 +145,7 @@ public class MapsFragment extends Fragment {
                     double longitude = prevMarker.getPosition().longitude;
                     double radius = prevCircle.getRadius() / DEFAULT_UNIT;
                     int days = -1;
+
                     String pastDays = dateDropdown.getText().toString();
                     if (pastDays.equals("Today")) {
                         days = 1;
@@ -203,6 +154,7 @@ public class MapsFragment extends Fragment {
                     } else if (pastDays.equals("Last 30 days")) {
                         days = 30;
                     }
+
                     TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
                      timelineApiProvider.getTimelinesInRadius(latitude,longitude,radius, days, response -> {
                         for (int n = 0; n < response.length(); n++) {
@@ -225,6 +177,68 @@ public class MapsFragment extends Fragment {
         }
     };
 
+    /**
+     * Setup method for search type
+     */
+    private void searchTypeSetup(GoogleMap googleMap) {
+        onType = "Search";
+        sliderLayout.setVisibility(View.VISIBLE);
+        dateLayout.setVisibility(View.VISIBLE);
+        searchButton.setVisibility(View.VISIBLE);
+
+        googleMap.setOnMapClickListener(point -> {
+            markerRadiusSelector(googleMap, point);
+        });
+
+        radiusSlider.addOnChangeListener((slider, value, fromUser) -> {
+            if (prevMarker != null && prevCircle == null) {
+                CircleOptions circleOptions = new CircleOptions()
+                        .center(new LatLng(prevMarker.getPosition().latitude, prevMarker.getPosition().longitude))
+                        .radius(DEFAULT_UNIT * value) // In meters
+                        .fillColor(0x33FF0000)
+                        .strokeColor(Color.RED)
+                        .strokeWidth(0);
+
+                prevCircle = googleMap.addCircle(circleOptions);
+                if (value != 0) {
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            circleOptions.getCenter(), getZoomLevel(prevCircle)));
+                }
+
+            } else if (prevMarker != null) {
+                prevCircle.setRadius(DEFAULT_UNIT * value);
+                if (value != 0) {
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            prevCircle.getCenter(), getZoomLevel(prevCircle)));
+                }
+
+            }
+        });
+    }
+
+    /**
+     * Setup method for Heatmap
+     */
+    private void heatMapTypeSetup(GoogleMap googleMap) {
+        onType = "Heatmap";
+        timelinesMarkers.clear();
+        if (prevMarker != null) {
+            prevMarker.remove();
+        }
+        radiusSlider.setValue(0);
+        if (prevCircle != null) {
+            prevCircle.remove();
+        }
+        clusterManager.clearItems();
+        googleMap.setOnMapClickListener(null);
+        searchButton.setVisibility(View.GONE);
+        dateLayout.setVisibility(View.INVISIBLE);
+        sliderLayout.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Method that adds heatmap with date from all existing timelines
+     */
     private void addHeatMap(GoogleMap googleMap) {
         List<LatLng> latLngs = new ArrayList<>();
 
@@ -233,8 +247,8 @@ public class MapsFragment extends Fragment {
             for (int i = 0; i < response.length(); i++) {
                 try {
                     JSONObject Object = response.getJSONObject(i);
-                    Double lat = Object.getDouble("latitude");
-                    Double lon = Object.getDouble("longitude");
+                    double lat = Object.getDouble("latitude");
+                    double lon = Object.getDouble("longitude");
                     latLngs.add(new LatLng(lat,lon));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -256,6 +270,9 @@ public class MapsFragment extends Fragment {
     ClusterManager<MyItem> clusterManager = null;
     MarkerManager markerManager = null;
 
+    /**
+     * return zoom level based relative to circle radius
+     */
     public int getZoomLevel(Circle circle) {
         int zoomLevel = 11;
         if (circle != null) {
@@ -266,6 +283,9 @@ public class MapsFragment extends Fragment {
         return zoomLevel;
     }
 
+    /**
+     * return customer marker color from hex code
+     */
     public BitmapDescriptor getMarkerIcon(String color) {
         float[] hsv = new float[3];
         Color.colorToHSV(Color.parseColor(color), hsv);
@@ -277,12 +297,9 @@ public class MapsFragment extends Fragment {
     Marker prevMarker;
     Circle prevCircle;
 
-    public void mapTimelines(GoogleMap googleMap) {
-        googleMap.setOnMapClickListener(point -> {
-            markerRadiusSelector(googleMap, point);
-        });
-    }
-
+    /**
+     *  Marker event listener in search - remove circle and remove previous marker
+     */
     public void markerRadiusSelector(GoogleMap googleMap, LatLng point) {
         if (prevMarker != null) {
             prevMarker.remove();
@@ -321,7 +338,7 @@ public class MapsFragment extends Fragment {
         autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
-        // Specify the types of place data to return. -->
+        // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.VIEWPORT));
 
         //set location bounds -> Thailand
@@ -354,83 +371,12 @@ public class MapsFragment extends Fragment {
         //get radius slider
         radiusSlider = getActivity().findViewById(R.id.radiusSlider);
 
-        //reset camera btn;
+        //reset camera btn
         resetCameraBtn = getActivity().findViewById(R.id.resetCameraBtn);
 
+        //search btn
         searchButton = getActivity().findViewById(R.id.searchButton);
 
         searchButton.setVisibility(View.INVISIBLE);
-
-        //timeline api provider test
-        TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
-        timelineApiProvider.createTimeline("2fa3g", "2020-02-25", "Dreamworld", 131.1142, 151.412, response -> {
-            try {
-                //stored the id
-                String id = response.getString("id");
-                Log.i("jsonresponse", id);
-                String user_id = response.getString("uid");
-                Log.i("jsonresponse", user_id);
-                String address = response.getString("address");
-                Log.i("jsonresponse", address);
-                String date = response.getString("date");
-                Log.i("jsonresponse", date);
-                double latitude = response.getDouble("latitude");
-                Log.i("jsonresponse", String.valueOf(latitude));
-                double longitude = response.getDouble("longitude");
-                Log.i("jsonresponse", String.valueOf(longitude));
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, error -> Log.e("postTimeline", error.toString()));
-
-        timelineApiProvider.deleteTimelineById("c015b498-6ea4-43e8-93a3-bf662787868c", response -> {
-            //Deleted OK, do something here...
-            Log.i("deleteTimeline","This is deleted");
-        }, error -> {
-            Log.e("deleteTimeline", error.toString());
-        });
-
-        timelineApiProvider.updateTimelineById("85d5508d-7f78-421e-8004-d9ff6af8a6f4","2021-03-13","disney land",453.34312,23.1242, response -> {
-            try {
-                //stored the id
-                String id = response.getString("id");
-                Log.i("jsonresponse", id);
-                String user_id = response.getString("uid");
-                Log.i("jsonresponse", user_id);
-                String address = response.getString("address");
-                Log.i("jsonresponse", address);
-                String date = response.getString("date");
-                Log.i("jsonresponse", date);
-                double latitude = response.getDouble("latitude");
-                Log.i("jsonresponse", String.valueOf(latitude));
-                double longitude = response.getDouble("longitude");
-                Log.i("jsonresponse", String.valueOf(longitude));
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, error -> {
-            Log.e("putTimeline", error.toString());
-        });
-
-        timelineApiProvider.getTimelinesByUserId("2fa3g", response -> {
-            for (int i = 0; i < response.length(); i++) {
-                try {
-                    JSONObject Object = response.getJSONObject(i);
-                    String id = Object.getString("id");
-                    Log.i("getArray", id);
-                    String address = Object.getString("address");
-                    Log.i("getArray", address);
-                    String date = Object.getString("date");
-                    Log.i("getArray", date);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, error -> Log.e("getArray", error.toString()));
-
     }
-
-
 }

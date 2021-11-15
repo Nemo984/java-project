@@ -15,7 +15,7 @@ public class MarkerClusterRenderer extends DefaultClusterRenderer<MyItem> {
 
     @Override
     public int getMinClusterSize() {
-        return 2;
+        return 1;
     }
 
 
