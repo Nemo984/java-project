@@ -1,4 +1,5 @@
 package com.example.myapplication;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
@@ -23,7 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -51,44 +51,38 @@ import java.util.Objects;
 
 public class Home extends Fragment {
     // Variables that used
-    HashMap<String, ArrayList<Integer>> data_provice = new HashMap<String, ArrayList<Integer>>();
-    HashMap<String, Integer> data_today = new HashMap<String, Integer>();
-    ArrayList<String> province_list = new ArrayList<>(Arrays.asList("Select Province","กระบี่","กรุงเทพมหานคร","กาญจนบุรี"
-            ,"กาฬสินธุ์", "กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท"
-            , "ชัยภูมิ","ชุมพร", "ตรัง", "ตราด", "ตาก", "นครนายก", "นครปฐม", "นครพนม", "นครราชสีมา"
-            , "นครศรีธรรมราช", "นครสวรรค์", "นนทบุรี", "นราธิวาส", "น่าน", "บึงกาฬ", "บุรีรัมย์", "ปทุมธานี", "ประจวบคีรีขันธ์", "ปราจีนบุรี", "ปัตตานี"
-            , "พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","ภูเก็ต","มหาสารคาม","มุกดาหาร","ยะลา","ยโสธร","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง"
-            ,"ลำพูน","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระบุรี","สระแก้ว","สิงห์บุรี","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","สุโขทัย","หนองคาย"
-            ,"หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี","เชียงราย","เชียงใหม่","เพชรบุรี","เพชรบูรณ์","เลย","แพร่","แม่ฮ่องสอน"));
-    SwipeRefreshLayout swipe;
-    TextView new_infected_p;
-    TextView total_infected_province;
-    TextView new_death_province;
-    TextView total_death_province;
-    TextView new_infected_country;
-    TextView total_infected_country;
-    TextView new_death_country;
-    TextView total_death_country;
-    TextView new_recovered;
-    TextView total_recovered;
-    TextView News_1;
-    TextView News_2;
-    NetworkImageView image_news_1;
-    NetworkImageView image_news_2;
+    private HashMap<String, ArrayList<Integer>> data_provice = new HashMap<String, ArrayList<Integer>>();
+    private HashMap<String, Integer> data_today = new HashMap<String, Integer>();
+    private ArrayList<String> province_list = new ArrayList<>(Arrays.asList("Select Province","กระบี่","กรุงเทพมหานคร","กาญจนบุรี"
+            ,"กาฬสินธุ์", "กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท", "ชัยภูมิ","ชุมพร", "ตรัง", "ตราด", "ตาก", "นครนายก",
+            "นครปฐม", "นครพนม", "นครราชสีมา", "นครศรีธรรมราช", "นครสวรรค์", "นนทบุรี", "นราธิวาส", "น่าน", "บึงกาฬ", "บุรีรัมย์", "ปทุมธานี",
+            "ประจวบคีรีขันธ์", "ปราจีนบุรี", "ปัตตานี", "พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","ภูเก็ต","มหาสารคาม","มุกดาหาร",
+            "ยะลา","ยโสธร","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ",
+            "สมุทรสงคราม","สมุทรสาคร","สระบุรี","สระแก้ว","สิงห์บุรี","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","สุโขทัย","หนองคาย","หนองบัวลำภู","อ่างทอง",
+            "อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี","เชียงราย","เชียงใหม่","เพชรบุรี","เพชรบูรณ์","เลย","แพร่","แม่ฮ่องสอน"));
+    private TextView new_infected_p;
+    private TextView total_infected_province;
+    private TextView new_death_province;
+    private TextView total_death_province;
+    private TextView new_infected_country;
+    private TextView total_infected_country;
+    private TextView new_death_country;
+    private TextView total_death_country;
+    private TextView new_recovered;
+    private TextView total_recovered;
 
-    NewsListAdapter adapter_news;
-    ListView listview;
-    ArrayList<News> arrayListnews;
-    ImageLoader imageLoader;
-    AutoCompleteTextView search_province;
-    TextView date_update;
-    Calendar calendar;
-    SimpleDateFormat dateFormat;
-    String date;
-    ArrayAdapter<String> adapter;
-    Context context;
+    private NewsListAdapter adapter_news;
+    private ListView listview;
+    private ArrayList<News> arrayListnews;
+    private AutoCompleteTextView search_province;
+    private TextView date_update;
+    private String date;
+    private ArrayAdapter<String> adapter;
+    private Context context;
 
-    JsonArrayRequest jsonArrayRequest_today = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES, null, new Response.Listener<JSONArray>() {
+    // Json Request for getting data from API JSON
+    private final JsonArrayRequest jsonArrayRequest_today = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES, null, new Response.Listener<JSONArray>() {
+        @SuppressLint("SetTextI18n")
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onResponse(JSONArray response) {
@@ -109,13 +103,19 @@ public class Home extends Fragment {
                 new_recovered.setText(String.valueOf("+ " + new DecimalFormat("###,###,###").format(data_today.get("new_recovered"))));
                 total_recovered.setText(String.valueOf(new DecimalFormat("###,###,###").format(data_today.get("total_recovered"))));
 
+                // Set Date
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                date = dateFormat.format(calendar.getTime());
+                date_update.setText(date);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }, error -> Log.e("Timelines", error.toString()));
 
-    JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES_PROVINCES, null, new Response.Listener<JSONArray>() {
+    private final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES_PROVINCES, null, new Response.Listener<JSONArray>() {
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onResponse(JSONArray response) {
@@ -137,31 +137,11 @@ public class Home extends Fragment {
                     e.printStackTrace();
                 }
             }
-            calendar = Calendar.getInstance();
-            dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            date = dateFormat.format(calendar.getTime());
-            date_update.setText(date);
-
-            swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    new Handler().postDelayed(new Runnable() {
-                        @RequiresApi(api = Build.VERSION_CODES.N)
-                        @Override
-                        public void run() {
-                            calendar = Calendar.getInstance();
-                            date = dateFormat.format(calendar.getTime());
-                            date_update.setText(date);
-                            swipe.setRefreshing(false);
-                        }
-                    }, 1000);
-                }
-            });
         }
 
     }, error -> Log.e("Timelines", error.toString()));
 
-    JsonObjectRequest NewsJsonRequest = new JsonObjectRequest(Request.Method.GET,
+    private final JsonObjectRequest NewsJsonRequest = new JsonObjectRequest(Request.Method.GET,
             NewsApi.NEWS,
             null,
             new Response.Listener<JSONObject>() {
@@ -182,41 +162,6 @@ public class Home extends Fragment {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-
-//                        News_1.setText(String.valueOf(((JSONArray) response.get("articles")).getJSONObject(0).get("title")));
-//                        News_2.setText(String.valueOf(((JSONArray) response.get("articles")).getJSONObject(1).get("title")));
-//
-//                        image_news_1.setImageUrl(String.valueOf(((JSONArray) response.get("articles")).getJSONObject(0).get("urlToImage")), ConnectionManager.getsImageLoader(getContext()));
-//                        image_news_2.setImageUrl(String.valueOf(((JSONArray) response.get("articles")).getJSONObject(1).get("urlToImage")), ConnectionManager.getsImageLoader(getContext()));
-
-//                        image_news_1.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                Intent browserIntent = null;
-//                                try {
-//                                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.valueOf(((JSONArray) response.get("articles")).getJSONObject(0).get("url"))));
-//
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                                startActivity(browserIntent);
-//                            }
-//                        });
-//                        image_news_2.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                Intent browserIntent = null;
-//                                try {
-//                                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.valueOf(((JSONArray) response.get("articles")).getJSONObject(1).get("url"))));
-//
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                                startActivity(browserIntent);
-//                            }
-//                        });
-
                 }
             },
             error -> Log.e("Timelines", error.toString())) {
@@ -228,7 +173,11 @@ public class Home extends Fragment {
         }
     };
 
+    // Methods
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setAllComponent(){
+
         // Textview For Province
         new_infected_p = (TextView) getActivity().findViewById(R.id.new_infected_province);
         total_infected_province = (TextView) getActivity().findViewById(R.id.total_infected_province);
@@ -245,48 +194,16 @@ public class Home extends Fragment {
 
         // Textview For Date Update
         date_update = (TextView) getActivity().findViewById(R.id.date_update);
-
-        // Textview for News
-//        News_1 = (TextView) getActivity().findViewById(R.id.News_1);
-//        News_2 = (TextView) getActivity().findViewById(R.id.News_2);
-
-        // NetworkImageView for News Picture
-//        image_news_1 = (NetworkImageView) getActivity().findViewById(R.id.image_news_1);
-//        image_news_2 = (NetworkImageView) getActivity().findViewById(R.id.image_news_2);
-
         listview = (ListView) getActivity().findViewById(R.id.list_news);
-        swipe = (SwipeRefreshLayout) getActivity().findViewById(R.id.swiperefresh);
 
 
-    }
-
-    public void setProvinceData(String province){
-        new_infected_p.setText("+ " + new DecimalFormat("###,###,###").format((data_provice.get(province)).get(0)).toString());
-        total_infected_province.setText(new DecimalFormat("###,###,###").format((data_provice.get(province)).get(2)).toString());
-        new_death_province.setText("+ " + new DecimalFormat("###,###,###").format((data_provice.get(province)).get(1)).toString());
-        total_death_province.setText(new DecimalFormat("###,###,###").format((data_provice.get(province)).get(3)).toString());
-    }
-    // Methods
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container,false);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        NewsJsonRequest.addMarker("");
-        Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
-        Volley.newRequestQueue(getContext()).add(jsonArrayRequest_today);
-        Volley.newRequestQueue(getContext()).add(NewsJsonRequest);
-        context = getContext();
-        setAllComponent();
         search_province = (AutoCompleteTextView) getActivity().findViewById(R.id.seach_province);
+
+        // Create Adapter and set
         adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, province_list);
         search_province.setAdapter(adapter);
 
+        //set Click on Suggestion dropdown
         search_province.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -297,13 +214,15 @@ public class Home extends Fragment {
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             }
         });
+
+        //set "Enter" key listener
         search_province.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP){
                     if(!province_list.contains(search_province.getText().toString())) {
                         if (!adapter.isEmpty()) {
-                            if (adapter.getItem(0) != "Select Province") {
+                            if (!adapter.getItem(0).equals("Select Province")) {
                                 String suggestion = adapter.getItem(0).toString();
                                 search_province.setText(suggestion);
                                 search_province.dismissDropDown();
@@ -322,6 +241,37 @@ public class Home extends Fragment {
             }
         });
     }
+
+    // set Province Data by String province
+    public void setProvinceData(String province){
+        new_infected_p.setText("+ " + new DecimalFormat("###,###,###").format((data_provice.get(province)).get(0)).toString());
+        total_infected_province.setText(new DecimalFormat("###,###,###").format((data_provice.get(province)).get(2)).toString());
+        new_death_province.setText("+ " + new DecimalFormat("###,###,###").format((data_provice.get(province)).get(1)).toString());
+        total_death_province.setText(new DecimalFormat("###,###,###").format((data_provice.get(province)).get(3)).toString());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_home, container,false);
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        NewsJsonRequest.addMarker("");
+        // Set Context for use
+        context = getContext();
+        setAllComponent();
+        Volley.newRequestQueue(context).add(jsonArrayRequest);
+        Volley.newRequestQueue(context).add(jsonArrayRequest_today);
+        Volley.newRequestQueue(context).add(NewsJsonRequest);
+
+    }
+    // Clear Province Data
     public void ClearData(){
         new_infected_p.setText("0");
         total_infected_province.setText("0");
@@ -329,6 +279,7 @@ public class Home extends Fragment {
         total_death_province.setText("0");
         search_province.setText("");
     }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
