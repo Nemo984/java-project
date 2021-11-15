@@ -197,7 +197,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
 
 
 
-    
+
 
     /**
      * To set dateText to the date that we selected.
@@ -207,7 +207,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     public void onDateSet(DatePicker view, int year, int month, int day) {
         dateText = (TextView) myDialog.findViewById(R.id.dateTextTest);
         String date=day+"/"+(month+1)+"/"+year;
-        day1 =year+"-"+month+"-"+day;
+        day1 =year+"-"+(month+1)+"-"+day;
         dateText.setText(date);
     }
 
