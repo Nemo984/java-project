@@ -20,6 +20,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 
 
 public class search extends Fragment  {
@@ -27,6 +33,7 @@ public class search extends Fragment  {
     public HashMap<Timeline,String> TimelineId = new HashMap<>();
     public static Timelineadapter adapter;
     String item;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -62,7 +69,7 @@ public class search extends Fragment  {
 
     public void delete_timeline(String id){
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
-        timelineApiProvider.deleteTimelineById("c015b498-6ea4-43e8-93a3-bf662787868c", response -> {
+        timelineApiProvider.deleteTimelineById(id, response -> {
             //Deleted OK, do something here...
             Log.i("deleteTimeline","This is deleted");
         }, error -> {
