@@ -37,7 +37,8 @@
 
         <activity
             android:name=".Mainpage"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
