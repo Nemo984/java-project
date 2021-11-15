@@ -1,11 +1,8 @@
 package com.example.myapplication;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,20 +10,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.myapplication.api.covid.CovidApi;
-import com.example.myapplication.api.covid.ProvinceLocationHashMap;
 import com.example.myapplication.api.timelines.TimelineApiProvider;
+import com.example.myapplication.cluster.MarkerClusterRenderer;
 import com.example.myapplication.cluster.MyItem;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,17 +44,12 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.collections.MarkerManager;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class MapsFragment extends Fragment {
 
@@ -198,6 +183,7 @@ public class MapsFragment extends Fragment {
             //search button
             // verify + api call
             clusterManager = new ClusterManager<>(getContext(), googleMap);
+            clusterManager.setRenderer(new MarkerClusterRenderer(getContext(),googleMap,clusterManager));
             searchButton.setOnClickListener(view -> {
                 if (prevMarker != null && prevCircle != null && prevCircle.getRadius() > 0) {
                     // Point the map's listeners at the listeners implemented by the cluster
