@@ -249,8 +249,6 @@ public class Home extends Fragment {
                 return false;
             }
         });
-
-
     }
 
     // set Province Data by String province
