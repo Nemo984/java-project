@@ -172,9 +172,8 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
                             home.ClearData();
                             break;
                     }
-
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                selectedFragment).commit();
 
                     return true;
                 }

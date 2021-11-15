@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Home extends Fragment {
     // Variables that used
@@ -75,6 +76,7 @@ public class Home extends Fragment {
     NetworkImageView image_news_1;
     NetworkImageView image_news_2;
 
+    NewsListAdapter adapter_news;
     ListView listview;
     ArrayList<News> arrayListnews;
     ImageLoader imageLoader;
@@ -84,6 +86,7 @@ public class Home extends Fragment {
     SimpleDateFormat dateFormat;
     String date;
     ArrayAdapter<String> adapter;
+    Context context;
 
     JsonArrayRequest jsonArrayRequest_today = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES, null, new Response.Listener<JSONArray>() {
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -173,12 +176,14 @@ public class Home extends Fragment {
                             String urlnews = String.valueOf(((JSONArray) response.get("articles")).getJSONObject(i).get("url"));
                             arrayListnews.add(new News(title, urlimage, urlnews));
                         }
+
+                        adapter_news = new NewsListAdapter(context, R.layout.news_layout, arrayListnews);
+                        listview.setAdapter(adapter_news);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
-                    NewsListAdapter adapter = new NewsListAdapter(getContext(), R.layout.news_layout, arrayListnews);
-                    listview.setAdapter(adapter);
+
 //                        News_1.setText(String.valueOf(((JSONArray) response.get("articles")).getJSONObject(0).get("title")));
 //                        News_2.setText(String.valueOf(((JSONArray) response.get("articles")).getJSONObject(1).get("title")));
 //
@@ -251,7 +256,8 @@ public class Home extends Fragment {
 
         listview = (ListView) getActivity().findViewById(R.id.list_news);
         swipe = (SwipeRefreshLayout) getActivity().findViewById(R.id.swiperefresh);
-        search_province = (AutoCompleteTextView) getActivity().findViewById(R.id.seach_province);
+
+
     }
 
     public void setProvinceData(String province){
@@ -275,9 +281,10 @@ public class Home extends Fragment {
         Volley.newRequestQueue(getContext()).add(jsonArrayRequest);
         Volley.newRequestQueue(getContext()).add(jsonArrayRequest_today);
         Volley.newRequestQueue(getContext()).add(NewsJsonRequest);
-
+        context = getContext();
         setAllComponent();
-        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, province_list);
+        search_province = (AutoCompleteTextView) getActivity().findViewById(R.id.seach_province);
+        adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, province_list);
         search_province.setAdapter(adapter);
 
         search_province.setOnItemClickListener(new AdapterView.OnItemClickListener() {
