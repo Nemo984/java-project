@@ -35,16 +35,17 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Delayed;
 
-public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     Dialog myDialog;
     EditText editText;
     TextView Lat;
-    double lat,Long;
+    double lat, Long;
     private TextView dateText;
     public static String android_id;
     static String name, day1;
     Home home;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +55,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 home).commit();
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-        android_id = Secure.getString(getApplicationContext().getContentResolver(),Secure.ANDROID_ID);
+        android_id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
         Log.i("android_id", android_id);
         myDialog = new Dialog(this);
 
@@ -70,7 +71,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     Fragment selectedFragment = null;
 
-                    switch (item.getItemId()){
+                    switch (item.getItemId()) {
                         case R.id.nav_home:
                             home.ClearData();
                             selectedFragment = home;
@@ -102,18 +103,17 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==100 && resultCode==RESULT_OK){
-            Place place=Autocomplete.getPlaceFromIntent(data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            Place place = Autocomplete.getPlaceFromIntent(data);
             editText.setText(place.getName());
             name = place.getName();
             Lat.setText(String.valueOf(place.getLatLng()));
             lat = place.getLatLng().latitude;
             Long = place.getLatLng().longitude;
 
-        }
-        else if(resultCode== AutocompleteActivity.RESULT_ERROR){
-            Status status=Autocomplete.getStatusFromIntent(data);
-            Toast.makeText(getApplicationContext(),status.getStatusMessage(),Toast.LENGTH_SHORT).show();
+        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+            Status status = Autocomplete.getStatusFromIntent(data);
+            Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -122,8 +122,8 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     /**
      * Display a datePicker.
      */
-    private void showDate(){
-        DatePickerDialog datePickerDialog=new DatePickerDialog(
+    private void showDate() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 this,
                 Calendar.getInstance().get(Calendar.YEAR),
@@ -136,11 +136,11 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     /**
      * Display the pop-up menu.
      */
-    public void ShowPopup(View v){
+    public void ShowPopup(View v) {
         TextView txtclose;
         TextView txtdone;
         myDialog.setContentView(R.layout.pop_menu);
-        txtclose =(TextView) myDialog.findViewById(R.id.textView3);
+        txtclose = (TextView) myDialog.findViewById(R.id.textView3);
         txtclose.setOnClickListener(new View.OnClickListener() {
             /**
              * click Textview close to close the pop-up menu.
@@ -158,7 +158,7 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
 
             @Override
             public void onClick(View view) {
-                List<Place.Field> fieldsList = Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG, Place.Field.NAME);
+                List<Place.Field> fieldsList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldsList).build(Mainpage.this);
                 startActivityForResult(intent, 100);
             }
@@ -177,26 +177,19 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
         txtdone = (TextView) myDialog.findViewById(R.id.done);
         txtdone.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 String Name = editText.getText().toString();
                 String Date = dateText.getText().toString();
                 Double lat1 = lat;
                 Double long1 = Long;
-                if(Name != null && Date != null)
-                {
-                    search.createTimeline(Name,Date,lat1,long1,getApplicationContext());
+                if (Name != null && Date != null) {
+                    search.createTimeline(Name, Date, lat1, long1, getApplicationContext());
                     myDialog.dismiss();
                 }
             }
         });
         myDialog.show();
     }
-
-
-
-
-
 
 
     /**
@@ -206,27 +199,27 @@ public class Mainpage extends AppCompatActivity implements DatePickerDialog.OnDa
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
         dateText = (TextView) myDialog.findViewById(R.id.dateTextTest);
-        String date=day+"/"+(month+1)+"/"+year;
-        day1 =year+"-"+(month+1)+"-"+day;
+        String date = day + "/" + (month + 1) + "/" + year;
+        day1 = year + "-" + (month + 1) + "-" + day;
         dateText.setText(date);
     }
 
     /**
      * button function that will redirect you to Phone app.
      */
-    public void call1(View v){
+    public void call1(View v) {
         Intent intent2 = new Intent(Intent.ACTION_DIAL);
         intent2.setData(Uri.parse("tel:1330"));
         startActivity(intent2);
     }
 
-    public void call2(View v){
+    public void call2(View v) {
         Intent intent2 = new Intent(Intent.ACTION_DIAL);
         intent2.setData(Uri.parse("tel:1668"));
         startActivity(intent2);
     }
 
-    public void call3(View v){
+    public void call3(View v) {
         Intent intent2 = new Intent(Intent.ACTION_DIAL);
         intent2.setData(Uri.parse("tel:1669"));
         startActivity(intent2);

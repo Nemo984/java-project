@@ -57,6 +57,7 @@ public class TimelineApiProvider {
      * @param callback response with JSONArray callback - [JSONObject,...] object with id, date, address
      * @param errorCallback error callback - handle the error
      */
+
     public void getTimelinesByUserId(String user_id, Response.Listener<JSONArray> callback, Response.ErrorListener errorCallback) {
         StringBuilder getURL = new StringBuilder(backend_url).append(path)
                 .append("/").append(user_id);
@@ -108,6 +109,7 @@ public class TimelineApiProvider {
      * @param callback callback with JSONObject returning id, date, address, latitude, longitude
      * @param errorCallback
      */
+
     public void updateTimelineById(String id,String date, String address, double latitude, double longitude, Response.Listener<JSONObject> callback, Response.ErrorListener errorCallback) {
         JSONObject putData = new JSONObject();
         try {
@@ -131,14 +133,11 @@ public class TimelineApiProvider {
      * @param callback success callback
      * @param errorCallback error callback
      */
+
     public void deleteTimelineById(String id, Response.Listener<String> callback, Response.ErrorListener errorCallback) {
         StringBuilder deleteURL = new StringBuilder(backend_url).append(path)
                 .append("/").append(id);
-
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, new String(deleteURL), callback, errorCallback);
         Volley.newRequestQueue(context).add(stringRequest);
-
     }
-
-
 }

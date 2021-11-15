@@ -25,8 +25,5 @@ public class CovidApi {
 
     //รายงานสถานการณ์ COVID-19 ระลอก 1 ถึงระลอก 2 (ตั้งแต่ 12/01/2020 – 31/03/2021) แยกตามรายจังหวัด
     public static final String ALL_CASES_ROUND12_PROVINCES = "https://covid19.ddc.moph.go.th/api/Cases/round-1to2-by-provinces";
-
-
-
-
+    
 }
