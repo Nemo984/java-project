@@ -207,7 +207,9 @@ public class MapsFragment extends Fragment {
     private void searchTypeSetup(GoogleMap googleMap) {
         onType = "Search";
         setComponentsType(onType);
-        overlay.setVisible(false);
+        if (overlay != null) {
+            overlay.setVisible(false);
+        }
 
         googleMap.setOnMapClickListener(point -> {
             markerRadiusSelector(googleMap, point);
