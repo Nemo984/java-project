@@ -13,13 +13,10 @@ MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent i = new Intent(MainActivity.this, Mainpage.class);
-                startActivity(i);
-                finish();
-            }
+        h.postDelayed(() -> {
+            Intent i = new Intent(MainActivity.this, Mainpage.class);
+            startActivity(i);
+            finish();
         },1000);
     }
 }
