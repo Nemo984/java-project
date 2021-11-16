@@ -88,6 +88,7 @@ public class Home extends Fragment {
         public void onResponse(JSONArray response) {
             try {
                 JSONObject object = response.getJSONObject(0);
+                // Put Today country data into hashmap
                 data_today.put("new_case", object.getInt("new_case"));
                 data_today.put("total_case", object.getInt("total_case"));
                 data_today.put("new_death", object.getInt("new_death"));
@@ -95,7 +96,7 @@ public class Home extends Fragment {
                 data_today.put("new_recovered", object.getInt("new_recovered"));
                 data_today.put("total_recovered", object.getInt("total_recovered"));
 
-                // Set Country Textview
+                // Set Today Country Textview
                 new_infected_country.setText("+ " + String.valueOf(new DecimalFormat("###,###,###").format(data_today.get("new_case"))));
                 total_infected_country.setText(String.valueOf(new DecimalFormat("###,###,###").format(data_today.get("total_case"))));
                 new_death_country.setText("+ " + String.valueOf(new DecimalFormat("###,###,###").format(data_today.get("new_death"))));
@@ -103,7 +104,7 @@ public class Home extends Fragment {
                 new_recovered.setText(String.valueOf("+ " + new DecimalFormat("###,###,###").format(data_today.get("new_recovered"))));
                 total_recovered.setText(String.valueOf(new DecimalFormat("###,###,###").format(data_today.get("total_recovered"))));
 
-                // Set Date
+                // Set Today Date
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 date = dateFormat.format(calendar.getTime());
@@ -115,18 +116,21 @@ public class Home extends Fragment {
         }
     }, error -> Log.e("Timelines", error.toString()));
 
-    private final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES_PROVINCES, null, new Response.Listener<JSONArray>() {
+    private final JsonArrayRequest jsonArrayRequest_province = new JsonArrayRequest(Request.Method.GET, CovidApi.TODAY_CASES_PROVINCES, null, new Response.Listener<JSONArray>() {
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onResponse(JSONArray response) {
             for (int n = 0; n < response.length(); n++) {
                 try {
+                    //get province data from Json Request
                     JSONObject object = response.getJSONObject(n);
                     String province = object.getString("province");
                     Integer new_case = object.getInt("new_case");
                     Integer new_death = object.getInt("new_death");
                     Integer total_case = object.getInt("total_case");
                     Integer total_death = object.getInt("total_death");
+
+                    //add province data to arraylist
                     ArrayList<Integer> data = new ArrayList<Integer>();
                     data.add(new_case);
                     data.add(new_death);
@@ -141,7 +145,7 @@ public class Home extends Fragment {
 
     }, error -> Log.e("Timelines", error.toString()));
 
-    private final JsonObjectRequest NewsJsonRequest = new JsonObjectRequest(Request.Method.GET,
+    private final JsonObjectRequest jsonObjectRequest_news = new JsonObjectRequest(Request.Method.GET,
             NewsApi.NEWS,
             null,
             new Response.Listener<JSONObject>() {
@@ -149,18 +153,21 @@ public class Home extends Fragment {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
-                        arrayListnews = new ArrayList<News>(response.getInt("totalResults"));
+
                         JSONArray articles = (JSONArray) response.get("articles");
 
+                        //Create arraylist, bind and adapter for ListView
+                        arrayListnews = new ArrayList<News>(response.getInt("totalResults"));
                         for (int i = 0; i < response.getInt("totalResults"); i++) {
                             String title = String.valueOf(articles.getJSONObject(i).get("title"));
                             String urlimage = String.valueOf(articles.getJSONObject(i).get("urlToImage"));
                             String urlnews = String.valueOf(articles.getJSONObject(i).get("url"));
                             arrayListnews.add(new News(title, urlimage, urlnews));
                         }
-
                         adapter_news = new NewsListAdapter(context, R.layout.news_layout, arrayListnews);
                         listview.setAdapter(adapter_news);
+
+                        // Set Listview to access to internet
                         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -205,7 +212,7 @@ public class Home extends Fragment {
         date_update = (TextView) getActivity().findViewById(R.id.date_update);
         listview = (ListView) getActivity().findViewById(R.id.list_news);
 
-
+        // AutoCompleteTextview for search province
         search_province = (AutoCompleteTextView) getActivity().findViewById(R.id.seach_province);
 
         // Create Adapter and set
@@ -272,13 +279,12 @@ public class Home extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        NewsJsonRequest.addMarker("");
         // Set Context for use
         context = getContext();
         setAllComponent();
-        Volley.newRequestQueue(context).add(jsonArrayRequest);
+        Volley.newRequestQueue(context).add(jsonArrayRequest_province);
         Volley.newRequestQueue(context).add(jsonArrayRequest_today);
-        Volley.newRequestQueue(context).add(NewsJsonRequest);
+        Volley.newRequestQueue(context).add(jsonObjectRequest_news);
 
     }
     // Clear Province Data
