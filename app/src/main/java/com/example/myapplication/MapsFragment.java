@@ -264,8 +264,10 @@ public class MapsFragment extends Fragment {
     /**
      * Method that adds heatmap with date from all existing timelines
      */
+    List<LatLng> latLngs = null;
     TileOverlay overlay;
     public void addHeatMap(GoogleMap googleMap) {
+        if (latLngs != null) return;
         List<LatLng> latLngs = new ArrayList<>();
 
         TimelineApiProvider timelineApiProvider = new TimelineApiProvider(getContext());
