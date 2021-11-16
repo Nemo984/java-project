@@ -14,12 +14,6 @@ public class MarkerClusterRenderer extends DefaultClusterRenderer<MyItem> {
     }
 
     @Override
-    public int getMinClusterSize() {
-        return 1;
-    }
-
-
-    @Override
     protected String getClusterText(int bucket) {
         return String.valueOf(bucket);
     }

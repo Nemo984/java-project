@@ -136,7 +136,9 @@ public class MapsFragment extends Fragment {
             //search button
             // verify + api call
             clusterManager = new ClusterManager<>(getContext(), googleMap);
-            clusterManager.setRenderer(new MarkerClusterRenderer(getContext(),googleMap,clusterManager));
+            MarkerClusterRenderer markerClusterRenderer = new MarkerClusterRenderer(getContext(),googleMap,clusterManager);
+            markerClusterRenderer.setMinClusterSize(2);
+            clusterManager.setRenderer(markerClusterRenderer);
             searchButton.setOnClickListener(view -> {
                 if (prevMarker != null && prevCircle != null && prevCircle.getRadius() > 0) {
                     // Point the map's listeners at the listeners implemented by the cluster
