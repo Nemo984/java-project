@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.api.timelines.TimelineApiProvider;
+import com.example.myapplication.Timeline.Timeline;
+import com.example.myapplication.Timeline.Timelineadapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;

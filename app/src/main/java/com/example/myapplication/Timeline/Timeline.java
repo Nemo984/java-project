@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.Timeline;
 
 public class Timeline {
     private String Name;
