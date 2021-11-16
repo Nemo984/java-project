@@ -238,18 +238,19 @@ public class Home extends Fragment {
                 if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP){
                     if(!province_list.contains(search_province.getText().toString())) {
                         if (!adapter.isEmpty()) {
-                            if (!adapter.getItem(0).equals("Select Province")) {
+                            if(search_province.getText().toString().isEmpty()){
+                                ClearData();
+                                search_province.setText("");
+                            }
+                            else if (!adapter.getItem(0).equals("Select Province")) {
                                 String suggestion = adapter.getItem(0).toString();
                                 search_province.setText(suggestion);
                                 search_province.dismissDropDown();
                                 setProvinceData(suggestion);
                             }
                         }
+                    }
 
-                    }
-                    if(search_province.getText().equals("")){
-                        ClearData();
-                    }
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 }
