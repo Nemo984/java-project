@@ -1,5 +1,7 @@
 # simple-covid-app
 Simple covid app project for Java class
+
+Backend: https://github.com/nemo984/simple-covid-backend
 ## Home
 ![home2](https://user-images.githubusercontent.com/52666539/147560071-97ec0ed5-5699-4a5b-a8f3-9cdc2ddc7d40.jpg)
 ![home](https://user-images.githubusercontent.com/52666539/147560045-590ebf2f-e298-4e56-ad6e-7eb031f7b06b.jpg)
